@@ -183,7 +183,7 @@ a{color:inherit}
 .notes-textarea:focus{border-color:var(--accent)}
 .note-editor{display:flex;flex-direction:column;gap:8px;flex:1;min-height:0}
 .note-toolbar{display:flex;align-items:center;gap:4px;flex-wrap:wrap;padding:7px;border:1px solid var(--line);background:var(--panel);border-radius:11px;position:sticky;top:0;z-index:2}
-.note-tool{border:1px solid transparent;background:transparent;color:var(--muted);border-radius:7px;padding:7px 9px;font-weight:700;min-width:34px}
+.note-tool{border:1px solid transparent;background:transparent;color:var(--muted);border-radius:7px;padding:7px 9px;font-weight:700;min-width:34px}.note-tool.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
 .note-tool:hover{background:var(--accent-soft);color:var(--accent);border-color:var(--line)}
 .note-toolbar .divider{width:1px;height:22px;background:var(--line);margin:0 2px}
 .note-mode{margin-left:auto;display:none}
@@ -681,6 +681,28 @@ function noteHeading(level){noteCommand('formatBlock','H'+level)}
 function noteBullet(){noteCommand('insertUnorderedList')}
 function noteNumbered(){noteCommand('insertOrderedList')}
 function noteQuote(){noteCommand('formatBlock','BLOCKQUOTE')}
+function toggleNoteHighlight(){
+  focusNoteEditor();
+  const sel=window.getSelection();
+  const text=(sel?sel.toString():'').trim();
+  if(!text){toast('Select text to highlight');return}
+  document.execCommand('hiliteColor',false,'#fff09a');
+  syncHighlightButton();
+  syncRichNoteMeta();
+}
+function selectionInsideNote(){
+  const ed=$('#noteBox');const sel=window.getSelection();
+  return !!(ed&&sel&&sel.rangeCount&&ed.contains(sel.anchorNode));
+}
+function syncHighlightButton(){
+  const btn=$('#noteHighlightBtn');if(!btn)return;
+  let active=false;
+  if(selectionInsideNote()){
+    try{active=document.queryCommandState('hiliteColor')||document.queryCommandState('backColor')}catch(e){}
+  }
+  btn.classList.toggle('active',!!active);
+  btn.setAttribute('aria-pressed',active?'true':'false');
+}
 function noteLink(){
   focusNoteEditor();
   const selection=window.getSelection();
@@ -743,7 +765,7 @@ function renderReaderSide(p){
       '<div class="note-toolbar">'+
         '<button class="note-tool" onmousedown="event.preventDefault()" onclick="noteCommand(\'bold\')" title="Bold"><b>B</b></button>'+
         '<button class="note-tool" onmousedown="event.preventDefault()" onclick="noteCommand(\'italic\')" title="Italic"><i>I</i></button>'+
-        '<button class="note-tool" onmousedown="event.preventDefault()" onclick="noteCommand(\'hiliteColor\',\'#fff09a\')" title="Highlight text" style="background:#fff09a;color:#17201b">A</button>'+
+        '<button id="noteHighlightBtn" class="note-tool" onmousedown="event.preventDefault()" onclick="toggleNoteHighlight()" title="Highlight text" aria-label="Highlight text" aria-pressed="false">A</button>'+
         '<span class="divider"></span>'+
         '<button class="note-tool" onmousedown="event.preventDefault()" onclick="noteHeading(1)" title="Heading 1">H1</button>'+
         '<button class="note-tool" onmousedown="event.preventDefault()" onclick="noteHeading(2)" title="Heading 2">H2</button>'+
@@ -757,7 +779,10 @@ function renderReaderSide(p){
       '<div class="note-actions"><button class="action primary" onclick="saveReaderNote('+attrArg(p.id)+')">Save note</button><button class="action" onclick="exportNotesPdf('+attrArg(p.id)+')">Export as PDF</button><button class="action" onclick="clearReaderNote('+attrArg(p.id)+')">Clear</button></div>'+
     '</div>';
     const ed=$('#noteBox');
-    ed.addEventListener('input',()=>{syncRichNoteMeta();queueNoteSave(p.id)});
+    ed.addEventListener('input',()=>{syncRichNoteMeta();syncHighlightButton();queueNoteSave(p.id)});
+    ed.addEventListener('keyup',syncHighlightButton);
+    ed.addEventListener('mouseup',syncHighlightButton);
+    ed.addEventListener('focus',syncHighlightButton);
     ed.addEventListener('keydown',e=>{
       if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();noteLink()}
     });
