@@ -110,7 +110,7 @@ def do_search(q,sources,limit=10):
 class Handler(SimpleHTTPRequestHandler):
  def __init__(self,*args,**kwargs): super().__init__(*args,directory=str(PUBLIC),**kwargs)
  def send_json(self,code,data):
-  raw=json.dumps(data).encode(); self.send_response(code); self.send_header('Content-Type','application/json; charset=utf-8'); self.send_header('Cache-Control','no-store'); self.send_header('Content-Length',str(len(raw))); self.end_headers(); self.wfile.write(raw)
+  raw=json.dumps(data).encode(); self.send_response(code); self.send_header('Content-Type','application/json; charset=utf-8'); self.send_header('Access-Control-Allow-Origin','*'); self.send_header('Cache-Control','no-store'); self.send_header('Content-Length',str(len(raw))); self.end_headers(); self.wfile.write(raw)
  def do_GET(self):
   parsed=urllib.parse.urlparse(self.path)
   if parsed.path=='/api/search':
