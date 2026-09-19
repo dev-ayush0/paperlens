@@ -39,6 +39,10 @@ a{color:inherit}
 .nav button:hover{background:var(--panel-2);color:var(--accent);transform:translateX(2px)}
 .nav button.active{background:var(--accent-soft);color:var(--accent);font-weight:760}
 .ico{width:20px;text-align:center;font-size:16px}
+.support-nav{display:grid;gap:4px;margin-top:8px}
+.support-nav a{width:100%;box-sizing:border-box;text-decoration:none;color:var(--muted);border-radius:12px;padding:10px 12px;display:flex;align-items:center;gap:11px;transition:.16s;font-size:13px}
+.support-nav a:hover{background:var(--panel-2);color:var(--accent);transform:translateX(2px)}
+.support-nav .support-ico{width:20px;text-align:center;font-size:15px}
 .side-bottom{margin-top:auto}
 .side-card{border:1px solid var(--line);background:var(--panel-2);border-radius:14px;padding:13px;color:var(--muted);font-size:12px}
 .side-card b{display:block;color:var(--text);margin-bottom:4px}
@@ -300,6 +304,11 @@ a{color:inherit}
       <button data-view="history" onclick="showHistory(this)"><span class="ico">◷</span><span>History</span></button>
       <button data-view="reader" onclick="showReader(this)"><span class="ico">▤</span><span>Reader</span></button>
     </nav>
+    <div class="nav-label" style="margin-top:14px">Donate</div>
+    <div class="support-nav">
+      <a href="https://buymeacoffee.com/arcayush" target="_blank" rel="noopener noreferrer"><span class="support-ico">☕</span><span>Buy me a Coffee</span></a>
+      <a href="https://buymeachai.in/ayush.void0" target="_blank" rel="noopener noreferrer"><span class="support-ico">🍵</span><span>Buy me a Chai</span></a>
+    </div>
     <div class="side-bottom">
       <div class="side-card"><b>Research cockpit</b><span>Discover openly. Read deeply. Keep your notes with the paper.</span></div>
     </div>
