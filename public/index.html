@@ -43,7 +43,9 @@ a{color:inherit}
 .side-card{border:1px solid var(--line);background:var(--panel-2);border-radius:14px;padding:13px;color:var(--muted);font-size:12px}
 .side-card b{display:block;color:var(--text);margin-bottom:4px}
 .main{width:100%;max-width:1550px;margin:0 auto;padding:22px 28px 40px}
-.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;color:var(--muted)}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;color:var(--muted)}.brand-mark{width:31px;height:31px;display:grid;place-items:center;color:var(--accent);font-weight:900;font-size:17px;letter-spacing:-.12em;line-height:1}
+.brand-mark span{display:block;transform:translate(-1px,-1px)}
+
 .settings{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:10px;padding:8px 12px}
 .settings:hover{border-color:var(--accent);color:var(--accent)}
 .page-head{margin-bottom:18px}
@@ -290,7 +292,7 @@ a{color:inherit}
 <body>
 <div class="app">
   <aside class="side">
-    <div class="brand"><div class="logo">P</div><span>PaperLens</span></div>
+    <div class="brand"><div class="brand-mark" aria-label="PaperLens logo" title="PaperLens"><span>⌕</span></div><span>PaperLens</span></div>
     <div class="nav-label">Workspace</div>
     <nav class="nav">
       <button data-view="discover" class="active" onclick="showDiscover(this)"><span class="ico">⌕</span><span>Discover</span></button>
