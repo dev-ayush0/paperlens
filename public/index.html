@@ -1,84 +1,721 @@
 <!doctype html>
-<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>PaperLens</title>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PaperLens — Research workspace</title>
 <style>
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f4f5f2;color:#1b1e1c;font:14px system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;transition:background .25s,color .25s}
-button,select,input{font:inherit}.app{display:grid;grid-template-columns:235px 1fr;min-height:100vh}
-.side{background:#fbfcfa;border-right:1px solid #e1e5e1;padding:18px 13px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;transition:background .25s,border .25s}
-.brand{font-weight:850;font-size:16px;padding:7px 10px 24px;display:flex;gap:10px;align-items:center}.logo{width:29px;height:29px;border:2px solid #176b57;border-radius:9px;display:grid;place-items:center;color:#176b57;font-weight:900;box-shadow:0 3px 12px #176b5718}
-.nav-label{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:#9aa19d;padding:0 11px 7px}.nav{display:grid;gap:3px}.nav button{width:100%;border:0;background:transparent;text-align:left;padding:10px 11px;border-radius:10px;color:#69716c;cursor:pointer;display:flex;align-items:center;gap:10px;transition:.18s}.nav button:hover{background:#eef3f0;color:#176b57;transform:translateX(2px)}.nav .active{background:#e2f0eb;color:#176b57;font-weight:750}.ico{width:19px;text-align:center;font-size:15px}.side-bottom{margin-top:auto}.mini{padding:12px;border:1px solid #e1e5e1;background:#f4f6f3;border-radius:12px;color:#69716c;font-size:12px}.mini b{display:block;color:#1b1e1c;margin-bottom:3px}
-.main{padding:22px 28px;max-width:1500px;width:100%;margin:auto}.top{display:flex;justify-content:space-between;align-items:center;color:#737a75;margin-bottom:18px}.settings{background:white;border:1px solid #ddd;border-radius:9px;padding:8px 13px;cursor:pointer;transition:.18s}.settings:hover{border-color:#176b57;color:#176b57;transform:translateY(-1px)}
-.hero{display:grid;grid-template-columns:1.8fr .9fr;gap:16px}.card{background:#fff;border:1px solid #e1e4e1;border-radius:17px;padding:22px;box-shadow:0 7px 25px #17251b08;transition:background .25s,border .25s,box-shadow .2s,transform .2s}.card:hover{box-shadow:0 10px 30px #17251b10}.eyebrow{color:#176b57;font-weight:800;letter-spacing:.1em;font-size:10px}.hero h1{font-size:34px;line-height:1.05;margin:9px 0}.hero p,.meta,.abstract{color:#737a75}.search{display:flex;background:#f1f3f0;border:1px solid #ddd;border-radius:13px;padding:6px;margin-top:18px;transition:.2s}.search:focus-within{border-color:#176b57;box-shadow:0 0 0 3px #176b5712}.search input{flex:1;border:0;background:transparent;outline:0;padding:11px;font-size:15px}.search button{background:#176b57;color:white;border:0;border-radius:9px;padding:0 20px;font-weight:750;cursor:pointer;min-width:95px}.search button:hover{filter:brightness(1.08)}.search button:disabled{opacity:.7;cursor:wait}.search .clear-search{background:transparent;color:#707872;min-width:34px;padding:0 8px;font-size:22px;font-weight:500;display:none}.search .clear-search:hover{filter:none;color:#176b57;background:#e5ebe7}.suggestions{position:absolute;left:6px;right:6px;top:calc(100% + 8px);background:white;border:1px solid #dfe4e0;border-radius:12px;box-shadow:0 14px 35px #17251b18;z-index:10;overflow:hidden;display:none}.search{position:relative}.suggestion{display:flex;align-items:center;gap:9px;width:100%;padding:10px 12px;border:0;background:transparent;text-align:left;cursor:pointer;color:#333}.suggestion:hover{background:#eef4f1;color:#176b57}.suggestion small{margin-left:auto;color:#929a95}.chips,.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.chip,.tab{border:0;background:#eceeea;color:#68706b;padding:7px 11px;border-radius:99px;cursor:pointer;transition:.18s}.chip:hover{background:#dfeae5;color:#176b57;transform:translateY(-1px)}.tab{border:1px solid #ddd;background:white}.tab.active{background:#e5efeb;color:#176b57;font-weight:700}
-.cockpit-title{display:flex;justify-content:space-between;align-items:center}.pulse{width:8px;height:8px;border-radius:50%;background:#35a276;box-shadow:0 0 0 5px #35a27618;animation:pulse 2s infinite}@keyframes pulse{50%{box-shadow:0 0 0 8px #35a27605}}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0}.stat{background:white;border:1px solid #e1e4e1;border-radius:13px;padding:14px;transition:.18s}.stat:hover{transform:translateY(-2px);box-shadow:0 8px 22px #17251b0b}.stat b{font-size:20px;display:block}.stat span{color:#737a75;font-size:12px}
-.filters{display:flex;justify-content:space-between;align-items:center;margin:10px 0}.filters select{border:1px solid #ddd;background:white;border-radius:9px;padding:7px 10px;color:#555}
-.results{display:grid;gap:10px}.popular{margin:16px 0}.popular-head{display:flex;justify-content:space-between;align-items:flex-start}.popular h2{margin:6px 0 2px;font-size:20px}.popular-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:15px}.popular-item{border:1px solid #e1e4e1;border-radius:12px;padding:13px;background:#fafbfa;cursor:pointer;transition:.18s;min-height:150px}.popular-item:hover{border-color:#bcd2c8;transform:translateY(-2px);box-shadow:0 8px 20px #17251b0b}.popular-tag{display:inline-block;font-size:10px;font-weight:800;color:#176b57;background:#e5efeb;padding:5px 7px;border-radius:99px;margin-bottom:9px}.popular-item h3{font-size:13px;line-height:1.3;margin:0 0 7px}.popular-item p{font-size:11px;color:#7a827d;line-height:1.4;margin:0}.paper{background:white;border:1px solid #e1e4e1;border-radius:15px;padding:17px;transition:.2s;animation:rise .3s ease both}.paper:hover{border-color:#c8d8d1;box-shadow:0 8px 25px #17251b0b;transform:translateY(-1px)}@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}.paperhead{display:flex;justify-content:space-between;gap:15px}.paper h3{margin:0 0 5px;font-size:16px}.source{color:#176b57;font-size:11px;font-weight:800}.abstract{font-size:12px;line-height:1.5;margin:9px 0}.actions{display:flex;gap:7px}.actions button{border:1px solid #ddd;background:white;border-radius:8px;padding:7px 11px;cursor:pointer;transition:.15s}.actions button:hover{border-color:#176b57;color:#176b57}
-.empty{ text-align:center;padding:45px;color:#737a75}.loading-wrap{padding:25px}.loading-title{font-weight:750;margin-bottom:14px}.loading-sub{color:#7a827d;font-size:12px;margin-top:7px}.bar{height:5px;background:#e7ebe8;border-radius:99px;overflow:hidden;margin-top:16px}.bar i{display:block;width:35%;height:100%;background:#176b57;border-radius:99px;animation:load 1.25s ease-in-out infinite}@keyframes load{0%{transform:translateX(-110%);width:25%}50%{width:45%}100%{transform:translateX(330%);width:25%}}.steps{display:flex;gap:8px;flex-wrap:wrap}.step{font-size:11px;background:#f1f4f1;color:#737a75;border-radius:99px;padding:6px 9px}.step.live{background:#e4f0eb;color:#176b57;font-weight:700}
-.modal-back{position:fixed;inset:0;background:#0d171285;display:grid;place-items:center;padding:20px;z-index:20;backdrop-filter:blur(5px)}.modal{width:min(470px,100%);background:white;border-radius:18px;border:1px solid #dde3df;padding:22px;box-shadow:0 24px 70px #0004}.modal-head{display:flex;justify-content:space-between;align-items:center}.modal h2{margin:0}.close{border:0;background:#eef1ee;border-radius:50%;width:32px;height:32px;cursor:pointer}.setting-row{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid #e7e9e7}.switch{width:48px;height:27px;border-radius:99px;background:#d9dedb;border:0;padding:3px;cursor:pointer}.switch i{display:block;width:21px;height:21px;border-radius:50%;background:white;transition:.2s;box-shadow:0 1px 3px #0002}.switch.on{background:#176b57}.switch.on i{transform:translateX(21px)}
-body.dark{background:#111513;color:#edf2ee}body.dark .side,body.dark .card,body.dark .stat,body.dark .paper,body.dark .modal,body.dark .settings,body.dark .tab,body.dark .filters select,body.dark .actions button{background:#181d1a;border-color:#2c3530;color:#edf2ee}body.dark .side{background:#151a17}body.dark .nav button{color:#9da8a1}body.dark .nav button:hover{background:#202b25;color:#72c8aa}body.dark .nav .active{background:#203b31;color:#76c9ad}body.dark .hero p,body.dark .meta,body.dark .abstract,body.dark .stat span,body.dark .top,body.dark .loading-sub,body.dark .empty{color:#96a19a}body.dark .search{background:#202521;border-color:#343d38}body.dark .chip,.dark .step,body.dark .step{background:#232a26;color:#9da8a1}body.dark .tab.active{background:#203b31;color:#76c9ad}body.dark .mini{background:#1d231f;border-color:#303832}body.dark .mini b{color:#edf2ee}body.dark .modal-back{background:#0008}body.dark .close{background:#252c28;color:#edf2ee}
-@media(max-width:850px){.app{grid-template-columns:1fr}.side{position:relative;height:auto;padding:10px;border-right:0;border-bottom:1px solid #e1e5e1}.brand{padding:6px 8px 10px}.nav{grid-template-columns:repeat(4,1fr)}.nav-label,.side-bottom{display:none}.nav button{justify-content:center;padding:9px 5px}.nav button span:last-child{display:none}.main{padding:14px}.hero{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.hero h1{font-size:28px}}
-</style></head>
-<body><div class="app">
-<aside class="side"><div class="brand"><div class="logo">P</div>PaperLens</div>
-<div class="nav-label">Workspace</div><nav class="nav">
-<button class="active" data-view="discover" onclick="showDiscover(this)"><span class="ico">⌕</span><span>Discover</span></button>
-<button data-view="library" onclick="showSaved(this)"><span class="ico">▱</span><span>My Library <small>(<span id="savedCount">0</span>)</small></span></button>
-<button data-view="history" onclick="showHistory(this)"><span class="ico">◷</span><span>History</span></button>
-<button data-view="reader" onclick="showReader(this)"><span class="ico">▤</span><span>Reader</span></button>
-</nav><div class="side-bottom"><div class="mini"><b>Research cockpit</b><span>Open-source discovery · local notes</span></div></div></aside>
-<main class="main"><div class="top"><span>Research literacy, without the mess.</span><button class="settings" onclick="openSettings()">⚙ Settings</button></div>
-<section class="hero"><div class="card"><div class="eyebrow">RESEARCH PAPER DISCOVERY</div><h1>Find the paper. Understand the paper. Keep it.</h1><p>Search open scholarly sources, save useful papers, and build your research library.</p>
-<div class="search" id="searchBox"><input id="q" autocomplete="off" placeholder="Try “incomplete fusion reactions”"><button class="clear-search" id="clearBtn" onclick="clearSearch()" aria-label="Clear search" title="Clear search">×</button><button id="searchBtn" onclick="search()">Search</button><div class="suggestions" id="suggestions"></div></div>
-<div class="chips"><button class="chip" onclick="go('Quantum mechanics')">Quantum mechanics</button><button class="chip" onclick="go('Incomplete fusion reactions')">Incomplete fusion</button><button class="chip" onclick="go('Cosmic inflation')">Cosmic inflation</button></div></div>
-<div class="card"><div class="cockpit-title"><b>Your research cockpit</b><span class="pulse"></span></div><p class="meta">Searches legal open scholarly sources in parallel.</p><hr style="border:0;border-top:1px solid #e1e4e1"><p>Saved papers <b style="float:right" id="savedStat">0</b></p><p>Annotations <b style="float:right">0</b></p><p>Search mode <b style="float:right">parallel</b></p></div></section>
-<div class="stats"><div class="stat"><b id="resultStat">0</b><span>results</span></div><div class="stat"><b id="sourceStat">0</b><span>sources returned</span></div><div class="stat"><b>0</b><span>paywalled copies mirrored</span></div><div class="stat"><b>100%</b><span>local-first notes</span></div></div><section class="popular card"><div class="popular-head"><div><div class="eyebrow">EXPLORE</div><h2>Popular papers</h2><p class="meta">A rotating starter shelf across areas you might want to explore.</p></div><span class="pulse"></span></div><div id="popularGrid" class="popular-grid"></div></section>
-<div class="filters"><div class="tabs"><button class="tab active" onclick="filter('all',this)">All</button><button class="tab" onclick="filter('arxiv',this)">arXiv</button><button class="tab" onclick="filter('pmc',this)">PMC</button><button class="tab" onclick="filter('doaj',this)">DOAJ</button><button class="tab" onclick="filter('gutenberg',this)">Gutenberg</button></div><select id="sort" onchange="render()"><option>Relevance</option><option>Newest</option></select></div>
-<div id="results"><div class="empty">Search for a topic to discover papers.</div></div></main></div>
+*{box-sizing:border-box}
+:root{
+  --bg:#f4f6f3;--panel:#fff;--panel-2:#f8faf8;--text:#1b211d;--muted:#737c76;
+  --line:#e0e6e1;--accent:#176b57;--accent-soft:#e2f0eb;--accent-2:#2f8f72;
+  --shadow:0 10px 35px rgba(24,42,32,.07);--radius:18px;
+}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:14px system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;transition:background .2s,color .2s}
+body.dark{
+  --bg:#101411;--panel:#181d1a;--panel-2:#202622;--text:#edf2ee;--muted:#98a49c;
+  --line:#2d3731;--accent:#77c9ad;--accent-soft:#203b31;--accent-2:#58ae90;--shadow:0 10px 35px rgba(0,0,0,.22)
+}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+a{color:inherit}
+.app{min-height:100vh;display:grid;grid-template-columns:245px minmax(0,1fr)}
+.side{
+  position:sticky;top:0;height:100vh;padding:18px 13px;background:var(--panel);
+  border-right:1px solid var(--line);display:flex;flex-direction:column;z-index:20
+}
+.brand{display:flex;align-items:center;gap:10px;font-weight:850;font-size:17px;padding:6px 10px 24px}
+.logo{
+  width:31px;height:31px;border:2px solid var(--accent);border-radius:10px;
+  display:grid;place-items:center;color:var(--accent);font-weight:900
+}
+.nav-label{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:#9aa39d;padding:0 11px 7px}
+.nav{display:grid;gap:4px}
+.nav button{
+  width:100%;border:0;background:transparent;color:var(--muted);border-radius:12px;
+  text-align:left;padding:11px 12px;display:flex;align-items:center;gap:11px;transition:.16s
+}
+.nav button:hover{background:var(--panel-2);color:var(--accent);transform:translateX(2px)}
+.nav button.active{background:var(--accent-soft);color:var(--accent);font-weight:760}
+.ico{width:20px;text-align:center;font-size:16px}
+.side-bottom{margin-top:auto}
+.side-card{border:1px solid var(--line);background:var(--panel-2);border-radius:14px;padding:13px;color:var(--muted);font-size:12px}
+.side-card b{display:block;color:var(--text);margin-bottom:4px}
+.main{width:100%;max-width:1550px;margin:0 auto;padding:22px 28px 40px}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;color:var(--muted)}
+.settings{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:10px;padding:8px 12px}
+.settings:hover{border-color:var(--accent);color:var(--accent)}
+.page-head{margin-bottom:18px}
+.page-head h1{margin:0 0 6px;font-size:30px;letter-spacing:-.03em}
+.page-head p{margin:0;color:var(--muted)}
+.eyebrow{color:var(--accent);font-weight:850;letter-spacing:.12em;font-size:10px;text-transform:uppercase}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.hero{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(260px,.75fr);gap:15px}
+.hero-card{padding:24px}
+.hero-card h2{font-size:36px;line-height:1.02;margin:8px 0 10px;letter-spacing:-.04em}
+.hero-card p{color:var(--muted);margin:0}
+.search-wrap{position:relative;margin-top:19px}
+.search{
+  display:flex;align-items:center;gap:4px;background:var(--panel-2);border:1px solid var(--line);
+  border-radius:14px;padding:6px;transition:.2s
+}
+.search:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 10%,transparent)}
+.search input{flex:1;min-width:0;border:0;outline:0;background:transparent;color:var(--text);padding:11px;font-size:15px}
+.search .clear{display:none;border:0;background:transparent;color:var(--muted);font-size:23px;width:36px;height:34px;border-radius:9px}
+.search .clear:hover{background:var(--accent-soft);color:var(--accent)}
+.search .go{border:0;border-radius:10px;background:var(--accent);color:#fff;padding:0 18px;height:38px;font-weight:760}
+.search .go:disabled{opacity:.65;cursor:wait}
+.suggestions{
+  position:absolute;left:0;right:0;top:calc(100% + 8px);display:none;background:var(--panel);
+  border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 45px rgba(0,0,0,.15);overflow:hidden;z-index:15
+}
+.suggestion{width:100%;border:0;background:transparent;color:var(--text);padding:11px 13px;text-align:left;display:flex;gap:9px;align-items:center}
+.suggestion:hover{background:var(--accent-soft);color:var(--accent)}
+.suggestion small{margin-left:auto;color:var(--muted)}
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.chip,.pill{border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:999px;padding:7px 10px}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.cockpit{padding:20px}
+.cockpit-title{display:flex;align-items:center;justify-content:space-between}
+.pulse{width:8px;height:8px;border-radius:50%;background:var(--accent-2);box-shadow:0 0 0 5px color-mix(in srgb,var(--accent-2) 12%,transparent)}
+.cockpit p{color:var(--muted);line-height:1.5}
+.kv{display:grid;gap:11px;margin-top:14px}
+.kv-row{display:flex;justify-content:space-between;gap:20px;padding:10px 0;border-bottom:1px solid var(--line)}
+.kv-row span{color:var(--muted)}
+.kv-row b{text-align:right}
+.explore{margin-top:16px;padding:18px}
+.explore-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.explore h2{margin:6px 0 3px;font-size:20px}
+.explore p{margin:0;color:var(--muted)}
+.popular-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:15px}
+.popular-item{
+  min-height:160px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--panel-2);
+  transition:.18s
+}
+.popular-item:hover{border-color:color-mix(in srgb,var(--accent) 45%,var(--line));transform:translateY(-2px)}
+.tag{display:inline-flex;align-items:center;border-radius:999px;background:var(--accent-soft);color:var(--accent);padding:5px 8px;font-size:10px;font-weight:820}
+.popular-item h3{font-size:13px;line-height:1.3;margin:9px 0 7px}
+.popular-item p{color:var(--muted);font-size:11px;line-height:1.45}
+.filters{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:15px 0 10px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab{border:1px solid var(--line);background:var(--panel);color:var(--muted);padding:7px 10px;border-radius:999px}
+.tab.active{background:var(--accent-soft);color:var(--accent);font-weight:750}
+.sort{border:1px solid var(--line);background:var(--panel);color:var(--text);padding:8px 10px;border-radius:10px}
+.results{display:grid;gap:10px}
+.paper{
+  padding:17px;border:1px solid var(--line);background:var(--panel);border-radius:15px;
+  transition:.18s;cursor:pointer
+}
+.paper:hover{border-color:color-mix(in srgb,var(--accent) 40%,var(--line));box-shadow:0 8px 26px rgba(28,48,37,.08);transform:translateY(-1px)}
+.paperhead{display:flex;justify-content:space-between;gap:16px}
+.paper h3{margin:0 0 5px;font-size:16px;line-height:1.28}
+.paper-meta{color:var(--muted);font-size:12px}
+.paper-abstract{margin:9px 0 12px;color:var(--muted);font-size:12px;line-height:1.55}
+.paper-actions{display:flex;gap:7px;flex-wrap:wrap}
+.action{
+  border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:9px;padding:7px 10px
+}
+.action.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.action:hover{border-color:var(--accent);color:var(--accent)}
+.action.primary:hover{color:#fff;filter:brightness(1.05)}
+.empty{padding:44px;text-align:center;color:var(--muted)}
+.loader{padding:22px}
+.loader-title{font-weight:760;margin-bottom:12px}
+.loader-sub{color:var(--muted);font-size:12px;margin-top:7px}
+.loading-bar{height:5px;background:var(--line);border-radius:99px;overflow:hidden}
+.loading-bar i{display:block;width:32%;height:100%;background:var(--accent);border-radius:99px;animation:load 1.2s ease-in-out infinite}
+@keyframes load{0%{transform:translateX(-120%)}100%{transform:translateX(380%)}}
+.view-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);gap:15px}
+.section-card{padding:18px}
+.section-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.section-title h2{margin:0;font-size:19px}
+.muted{color:var(--muted)}
+.library-grid{display:grid;gap:9px}
+.saved-item{
+  width:100%;text-align:left;border:1px solid var(--line);background:var(--panel-2);border-radius:13px;padding:12px
+}
+.saved-item:hover{border-color:var(--accent)}
+.saved-item .mini-title{font-weight:720;line-height:1.35}
+.saved-item .mini-meta{margin-top:5px;font-size:11px;color:var(--muted)}
+.history-list{display:grid;gap:9px}
+.history-item{padding:14px;border:1px solid var(--line);background:var(--panel);border-radius:13px}
+.history-item strong{display:block;margin-bottom:4px}
+.history-item span{font-size:11px;color:var(--muted)}
+.reader-shell{
+  display:grid;grid-template-columns:300px minmax(0,1fr);min-height:760px;overflow:hidden;
+  border:1px solid var(--line);border-radius:18px;background:var(--panel)
+}
+.reader-list{border-right:1px solid var(--line);background:var(--panel-2);padding:12px;overflow:auto}
+.reader-list-head{padding:6px 6px 12px}
+.reader-list-head h2{margin:0 0 4px;font-size:18px}
+.reader-list-head p{margin:0;color:var(--muted);font-size:12px}
+.reader-items{display:grid;gap:7px}
+.reader-item{
+  border:1px solid transparent;background:transparent;border-radius:12px;padding:11px;text-align:left;color:var(--text)
+}
+.reader-item:hover{background:var(--panel);border-color:var(--line)}
+.reader-item.active{background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 25%,var(--line))}
+.reader-item .mini-title{font-weight:720;font-size:12px;line-height:1.35}
+.reader-item .mini-meta{font-size:10px;color:var(--muted);margin-top:5px}
+.reader-main{display:flex;flex-direction:column;min-width:0}
+.reader-toolbar{
+  padding:11px 14px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:7px;flex-wrap:wrap;background:var(--panel)
+}
+.reader-toolbar .spacer{flex:1}
+.reader-body{padding:17px;display:grid;gap:14px;min-width:0}
+.reader-title{font-size:24px;line-height:1.1;letter-spacing:-.03em;margin:0}
+.reader-meta{color:var(--muted);font-size:12px;margin-top:6px}
+.reader-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.reader-stat{border:1px solid var(--line);background:var(--panel-2);border-radius:12px;padding:11px}
+.reader-stat b{display:block;font-size:16px}
+.reader-stat span{display:block;color:var(--muted);font-size:10px;margin-top:3px}
+.reader-workspace{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(300px,.75fr);gap:12px;min-height:500px}
+.pdf-panel{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#111;min-height:500px}
+.pdf-panel iframe{width:100%;height:100%;min-height:500px;border:0;background:#111}
+.pdf-fallback{height:100%;min-height:500px;display:grid;place-items:center;padding:30px;text-align:center;color:#bbb}
+.notes-panel{border:1px solid var(--line);border-radius:14px;background:var(--panel-2);padding:13px;display:flex;flex-direction:column;gap:10px}
+.notes-tabs{display:flex;gap:5px}
+.notes-tab{border:1px solid var(--line);background:var(--panel);color:var(--muted);padding:7px 9px;border-radius:9px}
+.notes-tab.active{background:var(--accent-soft);color:var(--accent);font-weight:750}
+.notes-content{min-height:0;display:flex;flex-direction:column;gap:9px;flex:1}
+.notes-textarea{flex:1;min-height:250px;width:100%;resize:vertical;border:1px solid var(--line);border-radius:11px;background:var(--panel);color:var(--text);padding:11px;outline:0}
+.notes-textarea:focus{border-color:var(--accent)}
+.highlight-help{padding:10px;border:1px dashed var(--line);border-radius:10px;color:var(--muted);font-size:11px;line-height:1.45}
+.note-list,.highlight-list{display:grid;gap:8px;max-height:380px;overflow:auto}
+.note-entry,.highlight-entry{padding:10px;border:1px solid var(--line);background:var(--panel);border-radius:10px}
+.note-entry small,.highlight-entry small{color:var(--muted)}
+.abstract-box{
+  border:1px solid var(--line);background:var(--panel-2);border-radius:14px;padding:14px;line-height:1.6;color:var(--muted)
+}
+.selectable{user-select:text}
+.detail-backdrop,.modal-back{
+  position:fixed;inset:0;background:rgba(7,13,10,.68);backdrop-filter:blur(6px);z-index:60;padding:24px;overflow:auto
+}
+.detail{
+  width:min(1100px,100%);margin:20px auto;background:var(--panel);border:1px solid var(--line);
+  border-radius:22px;overflow:hidden;box-shadow:0 30px 90px rgba(0,0,0,.25)
+}
+.detail-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;padding:22px 22px 14px}
+.detail-top h2{margin:0;font-size:28px;line-height:1.1}
+.detail-close{border:0;background:var(--panel-2);color:var(--text);border-radius:10px;padding:8px 11px}
+.bento{display:grid;grid-template-columns:1.15fr .85fr;gap:11px;padding:0 22px 22px}
+.bento-box{border:1px solid var(--line);background:var(--panel-2);border-radius:15px;padding:15px}
+.bento-box.large{grid-row:span 2}
+.bento-box h3{margin:0 0 7px;font-size:13px}
+.bento-box p{margin:0;color:var(--muted);line-height:1.55;font-size:12px}
+.metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.metric{padding:11px;border:1px solid var(--line);background:var(--panel);border-radius:11px}
+.metric b{display:block;font-size:15px}
+.metric span{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+.detail-actions{display:flex;gap:7px;flex-wrap:wrap;padding:0 22px 22px}
+.summary-line{font-size:13px!important;color:var(--text)!important}
+.modal{width:min(470px,100%);margin:auto;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px}
+.modal-head{display:flex;align-items:center;justify-content:space-between}
+.modal-head h2{margin:0}
+.setting-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:15px 0;border-bottom:1px solid var(--line)}
+.switch{width:48px;height:27px;border:0;border-radius:99px;background:#d7ddd9;padding:3px}
+.switch i{display:block;width:21px;height:21px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.switch.on{background:var(--accent)}
+.switch.on i{transform:translateX(21px)}
+.toast{
+  position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(10px);
+  background:#19221d;color:#fff;padding:10px 13px;border-radius:11px;opacity:0;pointer-events:none;
+  transition:.2s;z-index:100;font-size:12px
+}
+.toast.show{opacity:1;transform:translateX(-50%)}
+@media(max-width:1100px){
+  .hero,.view-grid{grid-template-columns:1fr}
+  .popular-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .reader-shell{grid-template-columns:250px minmax(0,1fr)}
+  .reader-workspace{grid-template-columns:1fr}
+}
+@media(max-width:850px){
+  .app{grid-template-columns:1fr}
+  .side{position:sticky;height:auto;border-right:0;border-bottom:1px solid var(--line);padding:9px 10px}
+  .brand{padding:5px 7px 9px}
+  .nav{grid-template-columns:repeat(4,1fr)}
+  .nav-label,.side-bottom{display:none}
+  .nav button{justify-content:center;padding:9px 5px}
+  .nav button span:last-child{display:none}
+  .main{padding:14px}
+  .hero-card h2{font-size:30px}
+  .popular-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .reader-shell{grid-template-columns:1fr}
+  .reader-list{border-right:0;border-bottom:1px solid var(--line);max-height:250px}
+  .reader-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .bento{grid-template-columns:1fr}
+  .bento-box.large{grid-row:auto}
+  .detail-top h2{font-size:23px}
+}
+@media(max-width:560px){
+  .popular-grid{grid-template-columns:1fr}
+  .filters{align-items:flex-start;flex-direction:column}
+  .paperhead{flex-direction:column}
+  .search .go{padding:0 13px}
+  .reader-toolbar .spacer{display:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="brand"><div class="logo">P</div><span>PaperLens</span></div>
+    <div class="nav-label">Workspace</div>
+    <nav class="nav">
+      <button data-view="discover" class="active" onclick="showDiscover(this)"><span class="ico">⌕</span><span>Discover</span></button>
+      <button data-view="library" onclick="showLibrary(this)"><span class="ico">▱</span><span>My Library <small>(<span id="savedCount">0</span>)</small></span></button>
+      <button data-view="history" onclick="showHistory(this)"><span class="ico">◷</span><span>History</span></button>
+      <button data-view="reader" onclick="showReader(this)"><span class="ico">▤</span><span>Reader</span></button>
+    </nav>
+    <div class="side-bottom">
+      <div class="side-card"><b>Research cockpit</b><span>Discover openly. Read deeply. Keep your notes with the paper.</span></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar"><span id="topCaption">Research discovery workspace</span><button class="settings" onclick="openSettings()">⚙ Settings</button></div>
+    <div id="appView"></div>
+  </main>
+</div>
+
+<div id="toast" class="toast"></div>
+
 <script>
-let all=[],src='all',historyList=JSON.parse(localStorage.getItem('paperlens_history')||'[]');const K='paperlens_saved';const $=x=>document.querySelector(x);
+const $ = (x) => document.querySelector(x);
+const STORE_SAVED='paperlens_saved';
+const STORE_HISTORY='paperlens_history';
+const STORE_NOTES='paperlens_notes';
+const STORE_HIGHLIGHTS='paperlens_highlights';
+const STORE_METRICS='paperlens_metrics';
+const STORE_THEME='paperlens_theme';
+let all=[];
+let src='all';
+let historyList=JSON.parse(localStorage.getItem(STORE_HISTORY)||'[]');
+let currentReaderId=null;
+let currentReaderTab='notes';
+
 const suggestionData=[
- {q:'incomplete fusion reactions',tag:'Physics'},{q:'quantum entanglement',tag:'Physics'},{q:'gravitational waves',tag:'Astronomy'},{q:'cosmic inflation',tag:'Astronomy'},
- {q:'transformer attention mechanisms',tag:'AI'},{q:'deep learning',tag:'AI'},{q:'large language models',tag:'AI'},{q:'computer vision',tag:'Tech'},
- {q:'human genome sequencing',tag:'Bio'},{q:'CRISPR gene editing',tag:'Bio'},{q:'machine learning materials science',tag:'Chem'},{q:'catalysis',tag:'Chem'},
- {q:'semiconductor physics',tag:'Tech'},{q:'quantum computing',tag:'Tech'}
+  {q:'incomplete fusion reactions',tag:'Physics'},
+  {q:'quantum entanglement',tag:'Physics'},
+  {q:'gravitational waves',tag:'Astronomy'},
+  {q:'cosmic inflation',tag:'Astronomy'},
+  {q:'transformer attention mechanisms',tag:'AI'},
+  {q:'deep learning',tag:'AI'},
+  {q:'large language models',tag:'AI'},
+  {q:'computer vision',tag:'Tech'},
+  {q:'human genome sequencing',tag:'Bio'},
+  {q:'CRISPR gene editing',tag:'Bio'},
+  {q:'machine learning materials science',tag:'Chem'},
+  {q:'catalysis',tag:'Chem'},
+  {q:'semiconductor physics',tag:'Tech'},
+  {q:'quantum computing',tag:'Tech'}
 ];
+
 const popularPapers=[
- {title:'Attention Is All You Need',tag:'AI',q:'Attention Is All You Need',desc:'The Transformer architecture that reshaped modern language models.'},
- {title:'Observation of Gravitational Waves from a Binary Black Hole Merger',tag:'Astronomy',q:'Observation of Gravitational Waves from a Binary Black Hole Merger',desc:'The first direct detection of gravitational waves by LIGO.'},
- {title:'Deep Residual Learning for Image Recognition',tag:'AI',q:'Deep Residual Learning for Image Recognition',desc:'The ResNet paper and the idea of learning residual functions.'},
- {title:'Initial sequencing and analysis of the human genome',tag:'Bio',q:'Initial sequencing and analysis of the human genome',desc:'A landmark publication describing the first human genome sequence.'},
- {title:'The Structure of Graphene',tag:'Chem / Materials',q:'graphene structure',desc:'A starting point for exploring graphene and two-dimensional materials.'},
- {title:'Cosmological Inflation and Large-Scale Structure',tag:'Physics / Astronomy',q:'cosmological inflation large scale structure',desc:'Explore how inflation connects early-universe physics to structure.'},
- {title:'Incomplete Fusion Reactions at Intermediate Energies',tag:'Physics',q:'incomplete fusion reactions',desc:'A useful starting search for nuclear-reaction research.'},
- {title:'AlphaFold: A Solution to a 50-Year-Old Grand Challenge in Biology',tag:'Bio / AI',q:'AlphaFold solution 50 year old challenge biology',desc:'AI applied to protein-structure prediction.'},
- {title:'Quantum Computation and Quantum Information',tag:'Tech / Physics',q:'quantum computation quantum information',desc:'A broad entry point into quantum information research.'},
- {title:'Machine Learning for Materials Science',tag:'Chem / Tech',q:'machine learning materials science',desc:'Explore the growing intersection of AI, chemistry and materials.'}
+  {title:'Attention Is All You Need',tag:'AI',q:'Attention Is All You Need',desc:'The Transformer architecture that reshaped modern language models.'},
+  {title:'Observation of Gravitational Waves from a Binary Black Hole Merger',tag:'Astronomy',q:'gravitational waves binary black hole merger',desc:'A landmark search entry point for gravitational-wave astronomy.'},
+  {title:'Deep Residual Learning for Image Recognition',tag:'AI',q:'Deep Residual Learning for Image Recognition',desc:'The ResNet paper and the residual-learning idea behind it.'},
+  {title:'Initial sequencing and analysis of the human genome',tag:'Bio',q:'human genome sequencing',desc:'A landmark publication in modern genomics.'},
+  {title:'The Structure of Graphene',tag:'Chem / Materials',q:'graphene structure',desc:'A starting point for two-dimensional materials research.'},
+  {title:'Cosmological Inflation and Large-Scale Structure',tag:'Physics / Astronomy',q:'cosmological inflation large scale structure',desc:'Explore the link between inflation and structure formation.'},
+  {title:'Incomplete Fusion Reactions at Intermediate Energies',tag:'Physics',q:'incomplete fusion reactions',desc:'A useful starting search for nuclear-reaction research.'},
+  {title:'AlphaFold: A Solution to a 50-Year-Old Grand Challenge in Biology',tag:'Bio / AI',q:'AlphaFold solution biology',desc:'AI applied to protein-structure prediction.'},
+  {title:'Quantum Computation and Quantum Information',tag:'Tech / Physics',q:'quantum computation quantum information',desc:'A broad entry point into quantum information.'},
+  {title:'Machine Learning for Materials Science',tag:'Chem / Tech',q:'machine learning materials science',desc:'The intersection of AI, chemistry and materials.'}
 ];
-function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function getSaved(){return JSON.parse(localStorage.getItem(K)||'[]')}function sync(){let n=getSaved().length;$('#savedCount').textContent=n;$('#savedStat').textContent=n}
-function activate(b){document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));if(b)b.classList.add('active')}
-function go(q){$('#q').value=q;updateSearchUI();search()}
-function clearSearch(){const input=$('#q');input.value='';updateSearchUI();input.focus();hideSuggestions()}
-function updateSearchUI(){const has=$('#q').value.length>0;$('#clearBtn').style.display=has?'block':'none';}
-function hideSuggestions(){if($('#suggestions'))$('#suggestions').style.display='none'}
-function showSuggestions(){const q=$('#q').value.trim().toLowerCase();const box=$('#suggestions');if(!q){hideSuggestions();return}const matches=suggestionData.filter(x=>x.q.toLowerCase().includes(q)||x.tag.toLowerCase().includes(q)).slice(0,7);if(!matches.length){hideSuggestions();return}box.innerHTML=matches.map(x=>'<button class="suggestion" onclick="chooseSuggestion('+JSON.stringify(x.q)+')">⌕ '+esc(x.q)+'<small>'+esc(x.tag)+'</small></button>').join('');box.style.display='block'}
+
+function esc(s){
+  return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function getSaved(){return JSON.parse(localStorage.getItem(STORE_SAVED)||'[]')}
+function setSaved(v){localStorage.setItem(STORE_SAVED,JSON.stringify(v))}
+function getNotes(){return JSON.parse(localStorage.getItem(STORE_NOTES)||'{}')}
+function setNotes(v){localStorage.setItem(STORE_NOTES,JSON.stringify(v))}
+function getHighlights(){return JSON.parse(localStorage.getItem(STORE_HIGHLIGHTS)||'{}')}
+function setHighlights(v){localStorage.setItem(STORE_HIGHLIGHTS,JSON.stringify(v))}
+function getMetrics(){return JSON.parse(localStorage.getItem(STORE_METRICS)||'{}')}
+function setMetrics(v){localStorage.setItem(STORE_METRICS,JSON.stringify(v))}
+function syncSavedCount(){let n=getSaved().length;$('#savedCount').textContent=n}
+function activate(btn){
+  document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+}
+function navButton(view){return document.querySelector('[data-view="'+view+'"]')}
+function toast(msg){
+  const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast.timer);
+  toast.timer=setTimeout(()=>t.classList.remove('show'),1800);
+}
+function metricFor(id){
+  const m=getMetrics();return m[id]||{opens:0,pdfOpens:0,readCount:0};
+}
+function bumpMetric(id,key){
+  if(!id)return;
+  const m=getMetrics();m[id]=m[id]||{opens:0,pdfOpens:0,readCount:0};m[id][key]=(m[id][key]||0)+1;setMetrics(m);
+}
+function showLoading(container){
+  container.innerHTML='<div class="card loader"><div class="loader-title">Finding the most relevant papers…</div><div class="loading-bar"><i></i></div><div class="loader-sub">Searching open sources and comparing titles, authors and abstracts.</div></div>';
+}
+function renderDiscover(){
+  $('#topCaption').textContent='Research discovery workspace';
+  $('#appView').innerHTML=
+    '<div class="page-head"><div class="eyebrow">DISCOVER</div><h1>Find papers worth keeping.</h1><p>Search open scholarly sources, then open any result for a fast paper brief.</p></div>'+
+    '<section class="hero">'+
+      '<div class="card hero-card">'+
+        '<div class="eyebrow">SEARCH ACROSS SOURCES</div>'+
+        '<h2>Find the paper.<br>Understand the paper.</h2>'+
+        '<p>Start broad, then use the paper brief to decide what deserves a deep read.</p>'+
+        '<div class="search-wrap">'+
+          '<div class="search" id="searchBox">'+
+            '<input id="q" autocomplete="off" placeholder="Try “incomplete fusion reactions”">'+
+            '<button class="clear" id="clearBtn" onclick="clearSearch()" aria-label="Clear search">×</button>'+
+            '<button class="go" id="searchBtn" onclick="search()">Search</button>'+
+          '</div>'+
+          '<div class="suggestions" id="suggestions"></div>'+
+        '</div>'+
+        '<div class="chips">'+
+          '<button class="chip" onclick="quickSearch(\'quantum entanglement\')">Quantum mechanics</button>'+
+          '<button class="chip" onclick="quickSearch(\'incomplete fusion reactions\')">Incomplete fusion</button>'+
+          '<button class="chip" onclick="quickSearch(\'cosmic inflation\')">Cosmic inflation</button>'+
+        '</div>'+
+      '</div>'+
+      '<div class="card cockpit">'+
+        '<div class="cockpit-title"><b>Your research cockpit</b><span class="pulse"></span></div>'+
+        '<p>PaperLens keeps discovery separate from reading so the interface stays focused.</p>'+
+        '<div class="kv">'+
+          '<div class="kv-row"><span>Saved papers</span><b id="savedStat">'+getSaved().length+'</b></div>'+
+          '<div class="kv-row"><span>Searches</span><b>'+historyList.length+'</b></div>'+
+          '<div class="kv-row"><span>Notes</span><b>'+Object.keys(getNotes()).length+'</b></div>'+
+          '<div class="kv-row"><span>Storage</span><b>this browser</b></div>'+
+        '</div>'+
+      '</div>'+
+    '</section>'+
+    '<section class="card explore">'+
+      '<div class="explore-head"><div><div class="eyebrow">EXPLORE</div><h2>Popular starting points</h2><p>Only shown in Discover.</p></div><span class="pulse"></span></div>'+
+      '<div id="popularGrid" class="popular-grid"></div>'+
+    '</section>'+
+    '<div class="filters"><div class="tabs">'+
+      '<button class="tab active" onclick="filterSource(\'all\',this)">All</button>'+
+      '<button class="tab" onclick="filterSource(\'arxiv\',this)">arXiv</button>'+
+      '<button class="tab" onclick="filterSource(\'pmc\',this)">PMC</button>'+
+      '<button class="tab" onclick="filterSource(\'doaj\',this)">DOAJ</button>'+
+      '<button class="tab" onclick="filterSource(\'gutenberg\',this)">Gutenberg</button>'+
+    '</div><select class="sort" id="sort" onchange="renderResults()"><option>Relevance</option><option>Newest</option></select></div>'+
+    '<div id="results"><div class="empty">Search for a topic to discover papers.</div></div>';
+  $('#popularGrid').innerHTML=popularPapers.map((p,i)=>
+    '<button class="popular-item" onclick="quickSearch('+JSON.stringify(p.q)+')" style="text-align:left">'+
+      '<span class="tag">'+esc(p.tag)+'</span><h3>'+esc(p.title)+'</h3><p>'+esc(p.desc)+'</p>'+
+    '</button>'
+  ).join('');
+  wireSearch();
+}
+function wireSearch(){
+  const input=$('#q');if(!input)return;
+  input.addEventListener('input',()=>{updateSearchUI();showSuggestions()});
+  input.addEventListener('focus',showSuggestions);
+  input.addEventListener('keydown',e=>{if(e.key==='Enter'){hideSuggestions();search()}if(e.key==='Escape')hideSuggestions()});
+  document.addEventListener('click',outsideSuggestion);
+  updateSearchUI();
+}
+function outsideSuggestion(e){
+  const box=$('#searchBox');if(box&&!box.contains(e.target))hideSuggestions();
+}
+function updateSearchUI(){const input=$('#q'),btn=$('#clearBtn');if(!input||!btn)return;btn.style.display=input.value.length?'block':'none'}
+function hideSuggestions(){const box=$('#suggestions');if(box)box.style.display='none'}
+function showSuggestions(){
+  const input=$('#q'),box=$('#suggestions');if(!input||!box)return;
+  const q=input.value.trim().toLowerCase();if(!q){hideSuggestions();return}
+  const matches=suggestionData.filter(x=>x.q.toLowerCase().includes(q)||x.tag.toLowerCase().includes(q)).slice(0,7);
+  if(!matches.length){hideSuggestions();return}
+  box.innerHTML=matches.map(x=>'<button class="suggestion" onclick="chooseSuggestion('+JSON.stringify(x.q)+')">⌕ '+esc(x.q)+'<small>'+esc(x.tag)+'</small></button>').join('');
+  box.style.display='block';
+}
+function clearSearch(){const input=$('#q');if(!input)return;input.value='';updateSearchUI();hideSuggestions();input.focus()}
 function chooseSuggestion(q){$('#q').value=q;updateSearchUI();hideSuggestions();search()}
-function renderPopular(){const el=$('#popularGrid');if(!el)return;el.innerHTML=popularPapers.map((p,i)=>'<article class="popular-item" onclick="choosePopular('+i+')"><span class="popular-tag">'+esc(p.tag)+'</span><h3>'+esc(p.title)+'</h3><p>'+esc(p.desc)+'</p></article>').join('')}
-function choosePopular(i){const p=popularPapers[i];if(p){$('#q').value=p.q;updateSearchUI();window.scrollTo({top:0,behavior:'smooth'});search()}}
-function loading(){return '<div class="card loading-wrap"><div class="loading-title">Finding the most relevant papers…</div><div class="steps"><span class="step live">Searching arXiv</span><span class="step">Checking PMC</span><span class="step">Scanning DOAJ</span><span class="step">Checking Gutenberg</span></div><div class="bar"><i></i></div><div class="loading-sub">Comparing titles, authors and abstracts while the sources respond.</div></div>'}
-async function search(){let q=$('#q').value.trim();if(!q)return;$('#searchBtn').disabled=true;$('#searchBtn').textContent='Searching…';$('#results').innerHTML=loading();try{let r=await fetch('/api/search?q='+encodeURIComponent(q)+'&limit=10'),d=await r.json();if(!r.ok)throw Error(d.error||'Search failed');all=d.results||[];$('#sourceStat').textContent=(d.sourceStatus||[]).filter(x=>x.count>0).length;historyList.unshift({q,time:Date.now(),count:all.length});historyList=historyList.slice(0,20);localStorage.setItem('paperlens_history',JSON.stringify(historyList));render()}catch(e){$('#results').innerHTML='<div class="empty">Search failed: '+esc(e.message)+'</div>'}finally{$('#searchBtn').disabled=false;$('#searchBtn').textContent='Search'}}
-function filter(s,b){src=s;document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');render()}
-function render(){let x=src==='all'?all:all.filter(p=>p.source===src);if($('#sort').value==='Newest')x=[...x].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));$('#resultStat').textContent=x.length;$('#results').innerHTML=x.length?x.map((p,i)=>'<article class="paper"><div class="paperhead"><div><h3>'+esc(p.title)+'</h3><div class="meta">'+esc((p.authors||[]).slice(0,5).join(', '))+(p.date?' · '+esc(String(p.date).slice(0,10)):'')+'</div></div><div class="source">'+esc(p.source.toUpperCase())+'</div></div><div class="abstract">'+esc(p.abstract||'No abstract available.')+'</div><div class="actions"><button onclick="readPaper('+i+')">Read</button><button onclick="save('+i+')">Save</button></div></article>').join(''):'<div class="empty">No relevant results found. Try a broader phrase.</div>'}
+function quickSearch(q){const input=$('#q');if(input){input.value=q;updateSearchUI();window.scrollTo({top:0,behavior:'smooth'});search()}}
+async function search(){
+  const input=$('#q');if(!input)return;
+  const q=input.value.trim();if(!q)return;
+  const btn=$('#searchBtn');btn.disabled=true;btn.textContent='Searching…';hideSuggestions();
+  showLoading($('#results'));
+  try{
+    const r=await fetch('/api/search?q='+encodeURIComponent(q)+'&limit=10');
+    const d=await r.json();if(!r.ok)throw Error(d.error||'Search failed');
+    all=d.results||[];src='all';
+    historyList.unshift({q:q,time:Date.now(),count:all.length});historyList=historyList.slice(0,30);
+    localStorage.setItem(STORE_HISTORY,JSON.stringify(historyList));
+    renderResults();
+  }catch(e){
+    $('#results').innerHTML='<div class="empty">Search failed: '+esc(e.message)+'</div>';
+  }finally{btn.disabled=false;btn.textContent='Search'}
+}
+function filterSource(s,b){src=s;document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderResults()}
 function currentItems(){return src==='all'?all:all.filter(p=>p.source===src)}
-function readPaper(i){let p=currentItems()[i];if(p)window.open(p.pdfUrl||p.url,'_blank')}
-function save(i){let p=currentItems()[i],s=getSaved();if(p&&!s.some(x=>x.id===p.id)){s.push(p);localStorage.setItem(K,JSON.stringify(s));sync()}}
-function showDiscover(b){activate(b);location.hash='discover';all=[];$('#results').innerHTML='<div class="empty">Search for a topic to discover papers.</div>'}
-function showSaved(b){activate(b);location.hash='library';all=getSaved();src='all';$('#resultStat').textContent=all.length;$('#sourceStat').textContent=new Set(all.map(x=>x.source)).size;$('#results').innerHTML=all.length?'': '<div class="empty">Your library is empty. Save papers from Discover.</div>';if(all.length)render()}
-function showHistory(b){activate(b);location.hash='history';$('#results').innerHTML=historyList.length?historyList.map(h=>'<article class="paper"><div class="paperhead"><div><h3>'+esc(h.q)+'</h3><div class="meta">'+new Date(h.time).toLocaleString()+'</div></div><div class="source">'+h.count+' results</div></div><div class="actions"><button onclick="go('+JSON.stringify(h.q)+');activate(document.querySelector(\'[data-view=discover]\'))">Search again</button></div></article>').join(''):'<div class="empty">No searches yet.</div>'}
-function showReader(b){activate(b);location.hash='reader';$('#results').innerHTML='<div class="empty">Reader mode will live here soon. For now, use Read on any result to open its paper.</div>'}
-function openSettings(){let dark=document.body.classList.contains('dark');document.body.insertAdjacentHTML('beforeend','<div class="modal-back" id="modal" onclick="if(event.target.id===\'modal\')closeSettings()"><div class="modal"><div class="modal-head"><h2>Settings</h2><button class="close" onclick="closeSettings()">×</button></div><div class="setting-row"><div><b>Dark mode</b><div class="meta">Use a darker research workspace.</div></div><button class="switch '+(dark?'on':'')+'" id="themeSwitch" onclick="toggleTheme()"><i></i></button></div><div class="setting-row"><div><b>Saved papers</b><div class="meta">Stored locally in this browser.</div></div><button class="actions button" style="border:1px solid #ddd;background:white;border-radius:8px;padding:7px 10px;cursor:pointer" onclick="clearSaved()">Clear</button></div></div></div>')}
-function closeSettings(){$('#modal')?.remove()}
-function toggleTheme(){let on=!document.body.classList.contains('dark');document.body.classList.toggle('dark',on);localStorage.setItem('paperlens_theme',on?'dark':'light');$('#themeSwitch').classList.toggle('on',on)}
-function clearSaved(){localStorage.removeItem(K);sync();closeSettings();showSaved(document.querySelector('[data-view=library]'))}
-$('#q').addEventListener('input',()=>{updateSearchUI();showSuggestions()});$('#q').addEventListener('focus',showSuggestions);$('#q').addEventListener('keydown',e=>{if(e.key==='Enter'){hideSuggestions();search()}if(e.key==='Escape'){hideSuggestions()}});document.addEventListener('click',e=>{if(!$('#searchBox').contains(e.target))hideSuggestions()});if(localStorage.getItem('paperlens_theme')==='dark')document.body.classList.add('dark');sync();updateSearchUI();renderPopular();
-</script></body></html>
+function renderResults(){
+  const results=$('#results');if(!results)return;
+  let items=currentItems();
+  if($('#sort')&&$('#sort').value==='Newest')items=[...items].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
+  if(!items.length){results.innerHTML='<div class="empty">No relevant results yet. Try a broader phrase.</div>';return}
+  results.innerHTML=items.map((p,i)=>
+    '<article class="paper" onclick="openDetail('+JSON.stringify(p.id)+')">'+
+      '<div class="paperhead"><div><h3>'+esc(p.title)+'</h3><div class="paper-meta">'+
+        esc((p.authors||[]).slice(0,5).join(', '))+(p.date?' · '+esc(String(p.date).slice(0,10)):'')+
+      '</div></div><div class="tag">'+esc((p.source||'').toUpperCase())+'</div></div>'+
+      '<div class="paper-abstract">'+esc((p.abstract||'No abstract available.').slice(0,380))+(p.abstract&&p.abstract.length>380?'…':'')+'</div>'+
+      '<div class="paper-actions">'+
+        '<button class="action primary" onclick="event.stopPropagation();openDetail('+JSON.stringify(p.id)+')">Open brief</button>'+
+        '<button class="action" onclick="event.stopPropagation();savePaperById('+JSON.stringify(p.id)+')">Save</button>'+
+        '<button class="action" onclick="event.stopPropagation();openPaper('+JSON.stringify(p.id)+')">Open paper</button>'+
+      '</div>'+
+    '</article>'
+  ).join('');
+}
+function findPaper(id){
+  return all.find(x=>x.id===id)||getSaved().find(x=>x.id===id);
+}
+function savePaperById(id){
+  const p=findPaper(id);if(!p)return;
+  const s=getSaved();
+  if(!s.some(x=>x.id===id)){s.push(p);setSaved(s);syncSavedCount();toast('Saved to My Library')}
+  else toast('Already saved');
+}
+function removeSaved(id){
+  setSaved(getSaved().filter(x=>x.id!==id));syncSavedCount();
+  if(location.hash==='#library')renderLibrary();
+  if(location.hash==='#reader')renderReaderHome();
+  toast('Removed from library');
+}
+function openPaper(id){
+  const p=findPaper(id);if(!p)return;
+  bumpMetric(id,'pdfOpens');
+  window.open(p.pdfUrl||p.url,'_blank');
+}
+function openDetail(id){
+  const p=findPaper(id);if(!p)return;
+  bumpMetric(id,'opens');
+  const m=metricFor(id);
+  const tags=(p.tags||[]).filter(Boolean).slice(0,6);
+  const sourceMetric=(p.source==='gutenberg'?'Download data is supplied by Gutenberg.':'This source does not expose download counts through PaperLens yet.');
+  const back=document.createElement('div');back.className='detail-backdrop';back.id='detailModal';
+  back.onclick=(e)=>{if(e.target===back)closeDetail()};
+  back.innerHTML=
+    '<div class="detail">'+
+      '<div class="detail-top"><div><div class="eyebrow">PAPER BRIEF</div><h2>'+esc(p.title)+'</h2><div class="reader-meta">'+esc((p.authors||[]).join(', '))+'</div></div>'+
+      '<button class="detail-close" onclick="closeDetail()">×</button></div>'+
+      '<div class="bento">'+
+        '<div class="bento-box large"><h3>In short</h3><p id="summaryText" class="summary-line">'+esc(localSummary(p))+'</p></div>'+
+        '<div class="bento-box"><h3>Paper stats</h3><div class="metrics">'+
+          '<div class="metric"><b>'+esc(String(p.date||'—').slice(0,10))+'</b><span>Published</span></div>'+
+          '<div class="metric"><b>'+esc((p.source||'—').toUpperCase())+'</b><span>Source</span></div>'+
+          '<div class="metric"><b>'+m.opens+'</b><span>PaperLens reads</span></div>'+
+          '<div class="metric"><b>'+m.pdfOpens+'</b><span>PDF opens</span></div>'+
+        '</div></div>'+
+        '<div class="bento-box"><h3>Open-access details</h3><p>'+esc(sourceMetric)+'</p><div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">'+tags.map(t=>'<span class="tag">'+esc(t)+'</span>').join('')+'</div></div>'+
+        '<div class="bento-box"><h3>Abstract</h3><p class="selectable" id="detailAbstract">'+esc(p.abstract||'No abstract available.')+'</p></div>'+
+        '<div class="bento-box"><h3>Authors</h3><p>'+esc((p.authors||[]).join(', ')||'Not supplied')+'</p></div>'+
+      '</div>'+
+      '<div class="detail-actions">'+
+        '<button class="action primary" onclick="closeDetail();openReaderFor('+JSON.stringify(p.id)+')">Read in PaperLens</button>'+
+        '<button class="action" onclick="savePaperById('+JSON.stringify(p.id)+')">Save</button>'+
+        '<button class="action" onclick="generateSummary('+JSON.stringify(p.id)+')">Generate fresh summary</button>'+
+        '<button class="action" onclick="openPaper('+JSON.stringify(p.id)+')">Open PDF</button>'+
+      '</div>'+
+    '</div>';
+  document.body.appendChild(back);
+}
+function closeDetail(){const x=$('#detailModal');if(x)x.remove()}
+function localSummary(p){
+  const text=(p.abstract||'').replace(/\s+/g,' ').trim();if(!text)return 'No abstract is available for a quick summary.';
+  const parts=text.split(/(?<=[.!?])\s+/).slice(0,2);return parts.join(' ');
+}
+async function generateSummary(id){
+  const p=findPaper(id);const out=$('#summaryText');if(!p||!out)return;
+  out.textContent='Generating a concise paper brief…';
+  try{
+    const r=await fetch('/api/summarize',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:p.title,abstract:p.abstract||''})});
+    const d=await r.json();if(!r.ok)throw Error(d.error||'Summary failed');out.textContent=d.summary||localSummary(p);
+  }catch(e){out.textContent=localSummary(p);toast('Using the local summary');}
+}
+function showLibrary(btn){
+  activate(btn);location.hash='library';renderLibrary();
+}
+function renderLibrary(){
+  $('#topCaption').textContent='Your saved research';
+  const saved=getSaved();
+  $('#appView').innerHTML=
+    '<div class="page-head"><div class="eyebrow">MY LIBRARY</div><h1>Saved papers, ready to revisit.</h1><p>Choose an article to open the paper brief or send it straight into Reader.</p></div>'+
+    '<div class="view-grid">'+
+      '<section class="card section-card"><div class="section-title"><h2>Saved articles <span class="muted" style="font-size:12px">'+saved.length+'</span></h2>'+
+      (saved.length?'<button class="action" onclick="clearLibrary()">Clear library</button>':'')+'</div>'+
+      '<div class="results">'+(saved.length?saved.map(p=>
+        '<article class="paper" onclick="openDetail('+JSON.stringify(p.id)+')"><div class="paperhead"><div><h3>'+esc(p.title)+'</h3><div class="paper-meta">'+esc((p.authors||[]).slice(0,4).join(', '))+(p.date?' · '+esc(String(p.date).slice(0,10)):'')+'</div></div><span class="tag">'+esc((p.source||'').toUpperCase())+'</span></div>'+
+        '<div class="paper-abstract">'+esc((p.abstract||'No abstract available.').slice(0,260))+(p.abstract&&p.abstract.length>260?'…':'')+'</div>'+
+        '<div class="paper-actions"><button class="action primary" onclick="event.stopPropagation();openReaderFor('+JSON.stringify(p.id)+')">Read</button><button class="action" onclick="event.stopPropagation();removeSaved('+JSON.stringify(p.id)+')">Remove</button></div></article>'
+      ).join(''):'<div class="empty">Nothing saved yet. Head to Discover and keep the papers you want to study.</div>')+'</div></section>'+
+      '<aside class="card section-card"><div class="section-title"><h2>Library habits</h2></div>'+
+        '<div class="kv"><div class="kv-row"><span>Saved</span><b>'+saved.length+'</b></div><div class="kv-row"><span>With notes</span><b>'+saved.filter(p=>getNotes()[p.id]).length+'</b></div><div class="kv-row"><span>With highlights</span><b>'+saved.filter(p=>(getHighlights()[p.id]||[]).length).length+'</b></div></div>'+
+        '<p class="muted" style="margin-top:16px;line-height:1.6">Reader is intentionally separate from discovery. Saving is your hand-off from “this looks useful” to “I am actually studying this paper.”</p>'+
+      '</aside>'+
+    '</div>';
+}
+function clearLibrary(){
+  if(confirm('Clear all saved papers?')){setSaved([]);syncSavedCount();renderLibrary();toast('Library cleared')}
+}
+function showHistory(btn){
+  activate(btn);location.hash='history';renderHistory();
+}
+function renderHistory(){
+  $('#topCaption').textContent='Search history';
+  $('#appView').innerHTML=
+    '<div class="page-head"><div class="eyebrow">HISTORY</div><h1>What you searched for.</h1><p>A lightweight trail of recent research questions, stored locally.</p></div>'+
+    '<div class="view-grid">'+
+      '<section class="card section-card"><div class="section-title"><h2>Recent searches</h2>'+(historyList.length?'<button class="action" onclick="clearHistory()">Clear history</button>':'')+'</div>'+
+      '<div class="history-list">'+(historyList.length?historyList.map(h=>
+        '<div class="history-item"><strong>'+esc(h.q)+'</strong><span>'+new Date(h.time).toLocaleString()+' · '+h.count+' results</span><div style="margin-top:9px"><button class="action" onclick="goToDiscover('+JSON.stringify(h.q)+')">Search again</button></div></div>'
+      ).join(''):'<div class="empty">No searches yet.</div>')+'</div></section>'+
+      '<aside class="card section-card"><div class="section-title"><h2>Why history matters</h2></div><p class="muted" style="line-height:1.65">Research questions evolve. Keeping your recent searches makes it easier to return to an old thread without mixing it into your reading workspace.</p></aside>'+
+    '</div>';
+}
+function clearHistory(){historyList=[];localStorage.setItem(STORE_HISTORY,'[]');renderHistory();toast('History cleared')}
+function goToDiscover(q){
+  const b=navButton('discover');activate(b);renderDiscover();location.hash='discover';
+  $('#q').value=q;updateSearchUI();search();
+}
+function showReader(btn){
+  activate(btn);location.hash='reader';renderReaderHome();
+}
+function renderReaderHome(){
+  $('#topCaption').textContent='Reading workspace';
+  const saved=getSaved();
+  if(!saved.length){
+    $('#appView').innerHTML=
+      '<div class="page-head"><div class="eyebrow">READER</div><h1>A calm place to actually read.</h1><p>Save a paper first, then choose it here.</p></div>'+
+      '<div class="card empty"><h2 style="margin-top:0">Your Reader is empty.</h2><p>Go to Discover, save a paper, and it will appear in this reading workspace.</p><button class="action primary" onclick="goToDiscover(\'quantum mechanics\')">Find a paper</button></div>';
+    return;
+  }
+  if(!currentReaderId||!saved.some(p=>p.id===currentReaderId))currentReaderId=saved[0].id;
+  renderReader();
+}
+function renderReader(){
+  const saved=getSaved();if(!saved.length){renderReaderHome();return}
+  const p=saved.find(x=>x.id===currentReaderId)||saved[0];currentReaderId=p.id;
+  const notes=getNotes();const highs=getHighlights();const m=metricFor(p.id);
+  $('#appView').innerHTML=
+    '<div class="page-head"><div class="eyebrow">READER</div><h1>Deep reading workspace.</h1><p>Select one of your saved articles, read the PDF, and keep your thinking next to it.</p></div>'+
+    '<section class="reader-shell">'+
+      '<aside class="reader-list"><div class="reader-list-head"><h2>Saved articles</h2><p>'+saved.length+' paper'+(saved.length===1?'':'s')+' in your library</p></div><div class="reader-items">'+
+      saved.map(x=>'<button class="reader-item '+(x.id===p.id?'active':'')+'" onclick="openReaderFor('+JSON.stringify(x.id)+')"><div class="mini-title">'+esc(x.title)+'</div><div class="mini-meta">'+esc((x.source||'').toUpperCase())+(x.date?' · '+esc(String(x.date).slice(0,10)):'')+'</div></button>').join('')+
+      '</div></aside>'+
+      '<section class="reader-main">'+
+        '<div class="reader-toolbar">'+
+          '<button class="action" onclick="showReader(navButton(\'reader\'))">All saved</button>'+
+          '<button class="action" onclick="readerPrev()">← Prev</button><button class="action" onclick="readerNext()">Next →</button>'+
+          '<span class="spacer"></span>'+
+          '<button class="action" onclick="markRead('+JSON.stringify(p.id)+')">✓ Mark read</button>'+
+          '<button class="action" onclick="openPaper('+JSON.stringify(p.id)+')">Open PDF</button>'+
+          '<button class="action" onclick="removeSaved('+JSON.stringify(p.id)+')">Remove</button>'+
+        '</div>'+
+        '<div class="reader-body">'+
+          '<div><h2 class="reader-title">'+esc(p.title)+'</h2><div class="reader-meta">'+esc((p.authors||[]).slice(0,8).join(', '))+(p.date?' · '+esc(String(p.date).slice(0,10)):'')+' · '+esc((p.source||'').toUpperCase())+'</div></div>'+
+          '<div class="reader-stats"><div class="reader-stat"><b>'+m.readCount+'</b><span>times marked read</span></div><div class="reader-stat"><b>'+m.pdfOpens+'</b><span>PDF opens</span></div><div class="reader-stat"><b>'+((highs[p.id]||[]).length)+'</b><span>highlights</span></div><div class="reader-stat"><b>'+((notes[p.id]||'').trim()?'1':'0')+'</b><span>note</span></div></div>'+
+          '<div class="reader-workspace">'+
+            '<div class="pdf-panel">'+
+              (p.pdfUrl?'<iframe title="PDF reader" src="'+esc(p.pdfUrl)+'"></iframe>':'<div class="pdf-fallback">No PDF URL was returned for this record.<br><br><button class="action" onclick="window.open('+JSON.stringify(p.url||'#')+',\'_blank\')">Open source page</button></div>')+
+            '</div>'+
+            '<aside class="notes-panel">'+
+              '<div class="notes-tabs"><button class="notes-tab '+(currentReaderTab==='notes'?'active':'')+'" onclick="switchReaderTab(\'notes\')">Notes</button><button class="notes-tab '+(currentReaderTab==='highlights'?'active':'')+'" onclick="switchReaderTab(\'highlights\')">Highlights</button><button class="notes-tab '+(currentReaderTab==='brief'?'active':'')+'" onclick="switchReaderTab(\'brief\')">Brief</button></div>'+
+              '<div class="notes-content" id="readerSideContent"></div>'+
+            '</aside>'+
+          '</div>'+
+          '<div class="abstract-box selectable" id="readerAbstract"><b style="color:var(--text);display:block;margin-bottom:7px">Abstract</b>'+esc(p.abstract||'No abstract available.')+'</div>'+
+          '<div style="display:flex;gap:7px;flex-wrap:wrap"><button class="action primary" onclick="addHighlightFromSelection('+JSON.stringify(p.id)+')">Highlight selected text</button><button class="action" onclick="openDetail('+JSON.stringify(p.id)+')">Paper brief</button><button class="action" onclick="generateReaderSummary('+JSON.stringify(p.id)+')">Summarize</button></div>'+
+        '</div>'+
+      '</section>'+
+    '</section>';
+  renderReaderSide(p);
+}
+function switchReaderTab(tab){currentReaderTab=tab;const p=findPaper(currentReaderId);if(p)renderReaderSide(p);document.querySelectorAll('.notes-tab').forEach(x=>x.classList.remove('active'));const idx={notes:0,highlights:1,brief:2}[tab];const tabs=document.querySelectorAll('.notes-tab');if(tabs[idx])tabs[idx].classList.add('active')}
+function renderReaderSide(p){
+  const el=$('#readerSideContent');if(!el)return;
+  const notes=getNotes();const highs=getHighlights();
+  if(currentReaderTab==='notes'){
+    el.innerHTML='<textarea id="noteBox" class="notes-textarea" placeholder="Write what you think about this paper…">'+esc(notes[p.id]||'')+'</textarea>'+
+      '<button class="action primary" onclick="saveReaderNote('+JSON.stringify(p.id)+')">Save note</button>'+
+      '<div class="highlight-help">Notes are stored locally with this paper. You can keep a research question, key equation, critique, follow-up idea, or anything you do not want to lose.</div>';
+  }else if(currentReaderTab==='highlights'){
+    const list=highs[p.id]||[];
+    el.innerHTML='<div class="highlight-help">Select text in the abstract below the PDF and press “Highlight selected text”. Each highlight can carry your own note.</div>'+
+      '<div class="highlight-list">'+(list.length?list.map((h,i)=>
+        '<div class="highlight-entry"><div style="line-height:1.45">“'+esc(h.text)+'”</div><small>'+new Date(h.time).toLocaleString()+'</small><div style="margin-top:7px"><button class="action" onclick="deleteHighlight('+JSON.stringify(p.id)+','+i+')">Delete</button></div></div>'
+      ).join(''):'<div class="empty" style="padding:25px 8px">No highlights yet.</div>')+'</div>';
+  }else{
+    el.innerHTML='<div class="highlight-help">Quick paper brief</div><div class="note-list"><div class="note-entry"><small>Title</small><div style="margin-top:4px;font-weight:720;line-height:1.4">'+esc(p.title)+'</div></div>'+
+      '<div class="note-entry"><small>Authors</small><div style="margin-top:4px">'+esc((p.authors||[]).join(', ')||'Not supplied')+'</div></div>'+
+      '<div class="note-entry"><small>Published</small><div style="margin-top:4px">'+esc(String(p.date||'Not supplied').slice(0,10))+'</div></div>'+
+      '<div class="note-entry"><small>Source</small><div style="margin-top:4px">'+esc((p.source||'').toUpperCase())+'</div></div></div>'+
+      '<button class="action primary" onclick="generateReaderSummary('+JSON.stringify(p.id)+')">Generate in-short summary</button><div id="readerSummary" class="highlight-help">'+esc(localSummary(p))+'</div>';
+  }
+}
+function saveReaderNote(id){
+  const ta=$('#noteBox');if(!ta)return;const n=getNotes();n[id]=ta.value;setNotes(n);toast('Note saved');
+}
+function addHighlightFromSelection(id){
+  const sel=window.getSelection();const text=(sel?sel.toString():'').trim();
+  if(!text){toast('Select some text in the abstract first');return}
+  const h=getHighlights();h[id]=h[id]||[];h[id].push({text:text,time:Date.now()});setHighlights(h);currentReaderTab='highlights';renderReader();toast('Highlight saved');
+}
+function deleteHighlight(id,i){
+  const h=getHighlights();h[id]=(h[id]||[]).filter((_,idx)=>idx!==i);setHighlights(h);renderReader();
+}
+async function generateReaderSummary(id){
+  const p=findPaper(id);if(!p)return;currentReaderTab='brief';renderReaderSide(p);
+  const target=$('#readerSummary');if(!target)return;target.textContent='Generating a concise paper brief…';
+  try{
+    const r=await fetch('/api/summarize',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:p.title,abstract:p.abstract||''})});
+    const d=await r.json();if(!r.ok)throw Error(d.error||'Summary failed');target.textContent=d.summary||localSummary(p);
+  }catch(e){target.textContent=localSummary(p);toast('Using the local summary')}
+}
+function markRead(id){
+  bumpMetric(id,'readCount');toast('Marked as read');
+  if(location.hash==='#reader')renderReader();
+}
+function openReaderFor(id){
+  currentReaderId=id;currentReaderTab='notes';activate(navButton('reader'));location.hash='reader';renderReader();
+}
+function readerPrev(){
+  const s=getSaved(),i=s.findIndex(x=>x.id===currentReaderId);if(i>0){currentReaderId=s[i-1].id;renderReader()}
+}
+function readerNext(){
+  const s=getSaved(),i=s.findIndex(x=>x.id===currentReaderId);if(i>=0&&i<s.length-1){currentReaderId=s[i+1].id;renderReader()}
+}
+function openSettings(){
+  const dark=document.body.classList.contains('dark');
+  const back=document.createElement('div');back.className='modal-back';back.id='settingsModal';back.onclick=e=>{if(e.target===back)closeSettings()};
+  back.innerHTML='<div class="modal"><div class="modal-head"><h2>Settings</h2><button class="detail-close" onclick="closeSettings()">×</button></div>'+
+    '<div class="setting-row"><div><b>Dark mode</b><div class="muted" style="margin-top:3px">Use a darker research workspace.</div></div><button class="switch '+(dark?'on':'')+'" id="themeSwitch" onclick="toggleTheme()"><i></i></button></div>'+
+    '<div class="setting-row"><div><b>Saved papers</b><div class="muted" style="margin-top:3px">Stored locally in this browser.</div></div><button class="action" onclick="clearLibrary();closeSettings()">Clear</button></div>'+
+    '<div style="padding-top:15px;color:var(--muted);font-size:12px;line-height:1.5">PaperLens currently keeps library, notes, highlights and history on this device. Cloud sync can be added later without changing the reading workflow.</div>'+
+  '</div>';
+  document.body.appendChild(back);
+}
+function closeSettings(){const x=$('#settingsModal');if(x)x.remove()}
+function toggleTheme(){
+  const on=!document.body.classList.contains('dark');document.body.classList.toggle('dark',on);localStorage.setItem(STORE_THEME,on?'dark':'light');
+  const sw=$('#themeSwitch');if(sw)sw.classList.toggle('on',on);
+}
+function boot(){
+  if(localStorage.getItem(STORE_THEME)==='dark')document.body.classList.add('dark');
+  syncSavedCount();
+  const hash=location.hash;
+  if(hash==='#library')showLibrary(navButton('library'));
+  else if(hash==='#history')showHistory(navButton('history'));
+  else if(hash==='#reader')showReader(navButton('reader'));
+  else{showDiscover(navButton('discover'))}
+}
+function showDiscover(btn){
+  activate(btn||navButton('discover'));location.hash='discover';src='all';all=[];renderDiscover();
+}
+boot();
+</script>
+</body>
+</html>
