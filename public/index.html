@@ -670,6 +670,7 @@ function updateNoteMeta(){
 }
 function renderMarkdown(md){
   let s=esc(md||'');
+  s=s.replace(/\\[([^\\]]+)\\]\\((https?:\\/\\/[^\\s)]+)\\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
   s=s.replace(/^### (.+)$/gm,'<h3>$1</h3>').replace(/^## (.+)$/gm,'<h2>$1</h2>').replace(/^# (.+)$/gm,'<h1>$1</h1>');
   s=s.replace(/^> (.+)$/gm,'<blockquote>$1</blockquote>');
   s=s.replace(/^[-*] (.+)$/gm,'<li>$1</li>');
