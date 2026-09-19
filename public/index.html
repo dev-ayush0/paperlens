@@ -313,7 +313,8 @@ const STORE_METRICS='paperlens_metrics';
 const STORE_THEME='paperlens_theme';
 let all=[];
 let src='all';
-let historyList=JSON.parse(localStorage.getItem(STORE_HISTORY)||'[]');
+function safeJSON(key,fallback){try{const raw=localStorage.getItem(key);return raw?JSON.parse(raw):fallback}catch(e){localStorage.removeItem(key);return fallback}}
+let historyList=safeJSON(STORE_HISTORY,[]);
 let currentReaderId=null;
 let currentReaderTab='notes';
 
@@ -351,13 +352,13 @@ function attrArg(v){return JSON.stringify(String(v)).replace(/"/g,'&quot;')}
 function esc(s){
   return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
-function getSaved(){return JSON.parse(localStorage.getItem(STORE_SAVED)||'[]')}
+function getSaved(){const v=safeJSON(STORE_SAVED,[]);return Array.isArray(v)?v:[]}
 function setSaved(v){localStorage.setItem(STORE_SAVED,JSON.stringify(v))}
-function getNotes(){return JSON.parse(localStorage.getItem(STORE_NOTES)||'{}')}
+function getNotes(){const v=safeJSON(STORE_NOTES,{});return v&&typeof v==='object'&&!Array.isArray(v)?v:{}}
 function setNotes(v){localStorage.setItem(STORE_NOTES,JSON.stringify(v))}
-function getHighlights(){return JSON.parse(localStorage.getItem(STORE_HIGHLIGHTS)||'{}')}
+function getHighlights(){const v=safeJSON(STORE_HIGHLIGHTS,{});return v&&typeof v==='object'&&!Array.isArray(v)?v:{}}
 function setHighlights(v){localStorage.setItem(STORE_HIGHLIGHTS,JSON.stringify(v))}
-function getMetrics(){return JSON.parse(localStorage.getItem(STORE_METRICS)||'{}')}
+function getMetrics(){const v=safeJSON(STORE_METRICS,{});return v&&typeof v==='object'&&!Array.isArray(v)?v:{}}
 function setMetrics(v){localStorage.setItem(STORE_METRICS,JSON.stringify(v))}
 function syncSavedCount(){let n=getSaved().length;$('#savedCount').textContent=n}
 function activate(btn){
@@ -670,7 +671,7 @@ function updateNoteMeta(){
 }
 function renderMarkdown(md){
   let s=esc(md||'');
-  s=s.replace(/\\[([^\\]]+)\\]\\((https?:\\/\\/[^\\s)]+)\\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+  s=s.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
   s=s.replace(/^### (.+)$/gm,'<h3>$1</h3>').replace(/^## (.+)$/gm,'<h2>$1</h2>').replace(/^# (.+)$/gm,'<h1>$1</h1>');
   s=s.replace(/^> (.+)$/gm,'<blockquote>$1</blockquote>');
   s=s.replace(/^[-*] (.+)$/gm,'<li>$1</li>');
@@ -787,14 +788,26 @@ function toggleTheme(){
   const sw=$('#themeSwitch');if(sw)sw.classList.toggle('on',on);
 }
 function boot(){
-  if(localStorage.getItem(STORE_THEME)==='dark')document.body.classList.add('dark');
-  syncSavedCount();
-  const hash=location.hash;
-  if(hash==='#library')showLibrary(navButton('library'));
-  else if(hash==='#history')showHistory(navButton('history'));
-  else if(hash==='#reader')showReader(navButton('reader'));
-  else{showDiscover(navButton('discover'))}
+  try{
+    if(localStorage.getItem(STORE_THEME)==='dark')document.body.classList.add('dark');
+    syncSavedCount();
+    const hash=location.hash;
+    if(hash==='#library')showLibrary(navButton('library'));
+    else if(hash==='#history')showHistory(navButton('history'));
+    else if(hash==='#reader')showReader(navButton('reader'));
+    else{showDiscover(navButton('discover'))}
+  }catch(e){
+    console.error('PaperLens boot error',e);
+    const view=$('#appView');
+    if(view)view.innerHTML='<div class="card empty"><h2 style="margin-top:0">PaperLens hit a local-data error.</h2><p>The app can recover by clearing its local research cache.</p><button class="action primary" onclick="recoverLocalData()">Reset local app data</button></div>';
+  }
 }
+function recoverLocalData(){
+  [STORE_SAVED,STORE_HISTORY,STORE_NOTES,STORE_HIGHLIGHTS,STORE_METRICS].forEach(k=>localStorage.removeItem(k));
+  historyList=[];currentReaderId=null;currentReaderTab='notes';
+  syncSavedCount();showDiscover(navButton('discover'));toast('Local research data reset');
+}
+window.addEventListener('error',e=>console.error('PaperLens error',e.error||e.message));
 function showDiscover(btn){
   activate(btn||navButton('discover'));location.hash='discover';src='all';all=[];renderDiscover();
 }
