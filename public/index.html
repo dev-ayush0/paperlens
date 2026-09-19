@@ -325,6 +325,7 @@ const popularPapers=[
   {title:'Machine Learning for Materials Science',tag:'Chem / Tech',q:'machine learning materials science',desc:'The intersection of AI, chemistry and materials.'}
 ];
 
+function attrArg(v){return JSON.stringify(String(v)).replace(/"/g,'&quot;')}
 function esc(s){
   return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
@@ -403,7 +404,7 @@ function renderDiscover(){
     '</div><select class="sort" id="sort" onchange="renderResults()"><option>Relevance</option><option>Newest</option></select></div>'+
     '<div id="results"><div class="empty">Search for a topic to discover papers.</div></div>';
   $('#popularGrid').innerHTML=popularPapers.map((p,i)=>
-    '<button class="popular-item" onclick="quickSearch('+JSON.stringify(p.q)+')" style="text-align:left">'+
+    '<button class="popular-item" onclick="quickSearch('+attrArg(p.q)+')" style="text-align:left">'+
       '<span class="tag">'+esc(p.tag)+'</span><h3>'+esc(p.title)+'</h3><p>'+esc(p.desc)+'</p>'+
     '</button>'
   ).join('');
@@ -427,7 +428,7 @@ function showSuggestions(){
   const q=input.value.trim().toLowerCase();if(!q){hideSuggestions();return}
   const matches=suggestionData.filter(x=>x.q.toLowerCase().includes(q)||x.tag.toLowerCase().includes(q)).slice(0,7);
   if(!matches.length){hideSuggestions();return}
-  box.innerHTML=matches.map(x=>'<button class="suggestion" onclick="chooseSuggestion('+JSON.stringify(x.q)+')">⌕ '+esc(x.q)+'<small>'+esc(x.tag)+'</small></button>').join('');
+  box.innerHTML=matches.map(x=>'<button class="suggestion" onclick="chooseSuggestion('+attrArg(x.q)+')">⌕ '+esc(x.q)+'<small>'+esc(x.tag)+'</small></button>').join('');
   box.style.display='block';
 }
 function clearSearch(){const input=$('#q');if(!input)return;input.value='';updateSearchUI();hideSuggestions();input.focus()}
@@ -457,15 +458,15 @@ function renderResults(){
   if($('#sort')&&$('#sort').value==='Newest')items=[...items].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
   if(!items.length){results.innerHTML='<div class="empty">No relevant results yet. Try a broader phrase.</div>';return}
   results.innerHTML=items.map((p,i)=>
-    '<article class="paper" onclick="openDetail('+JSON.stringify(p.id)+')">'+
+    '<article class="paper" onclick="openDetail('+attrArg(p.id)+')">'+
       '<div class="paperhead"><div><h3>'+esc(p.title)+'</h3><div class="paper-meta">'+
         esc((p.authors||[]).slice(0,5).join(', '))+(p.date?' · '+esc(String(p.date).slice(0,10)):'')+
       '</div></div><div class="tag">'+esc((p.source||'').toUpperCase())+'</div></div>'+
       '<div class="paper-abstract">'+esc((p.abstract||'No abstract available.').slice(0,380))+(p.abstract&&p.abstract.length>380?'…':'')+'</div>'+
       '<div class="paper-actions">'+
-        '<button class="action primary" onclick="event.stopPropagation();openDetail('+JSON.stringify(p.id)+')">Open brief</button>'+
-        '<button class="action" onclick="event.stopPropagation();savePaperById('+JSON.stringify(p.id)+')">Save</button>'+
-        '<button class="action" onclick="event.stopPropagation();openPaper('+JSON.stringify(p.id)+')">Open paper</button>'+
+        '<button class="action primary" onclick="event.stopPropagation();openDetail('+attrArg(p.id)+')">Open brief</button>'+
+        '<button class="action" onclick="event.stopPropagation();savePaperById('+attrArg(p.id)+')">Save</button>'+
+        '<button class="action" onclick="event.stopPropagation();openPaper('+attrArg(p.id)+')">Open paper</button>'+
       '</div>'+
     '</article>'
   ).join('');
@@ -515,10 +516,10 @@ function openDetail(id){
         '<div class="bento-box"><h3>Authors</h3><p>'+esc((p.authors||[]).join(', ')||'Not supplied')+'</p></div>'+
       '</div>'+
       '<div class="detail-actions">'+
-        '<button class="action primary" onclick="closeDetail();openReaderFor('+JSON.stringify(p.id)+')">Read in PaperLens</button>'+
-        '<button class="action" onclick="savePaperById('+JSON.stringify(p.id)+')">Save</button>'+
-        '<button class="action" onclick="generateSummary('+JSON.stringify(p.id)+')">Generate fresh summary</button>'+
-        '<button class="action" onclick="openPaper('+JSON.stringify(p.id)+')">Open PDF</button>'+
+        '<button class="action primary" onclick="closeDetail();openReaderFor('+attrArg(p.id)+')">Read in PaperLens</button>'+
+        '<button class="action" onclick="savePaperById('+attrArg(p.id)+')">Save</button>'+
+        '<button class="action" onclick="generateSummary('+attrArg(p.id)+')">Generate fresh summary</button>'+
+        '<button class="action" onclick="openPaper('+attrArg(p.id)+')">Open PDF</button>'+
       '</div>'+
     '</div>';
   document.body.appendChild(back);
@@ -548,9 +549,9 @@ function renderLibrary(){
       '<section class="card section-card"><div class="section-title"><h2>Saved articles <span class="muted" style="font-size:12px">'+saved.length+'</span></h2>'+
       (saved.length?'<button class="action" onclick="clearLibrary()">Clear library</button>':'')+'</div>'+
       '<div class="results">'+(saved.length?saved.map(p=>
-        '<article class="paper" onclick="openDetail('+JSON.stringify(p.id)+')"><div class="paperhead"><div><h3>'+esc(p.title)+'</h3><div class="paper-meta">'+esc((p.authors||[]).slice(0,4).join(', '))+(p.date?' · '+esc(String(p.date).slice(0,10)):'')+'</div></div><span class="tag">'+esc((p.source||'').toUpperCase())+'</span></div>'+
+        '<article class="paper" onclick="openDetail('+attrArg(p.id)+')"><div class="paperhead"><div><h3>'+esc(p.title)+'</h3><div class="paper-meta">'+esc((p.authors||[]).slice(0,4).join(', '))+(p.date?' · '+esc(String(p.date).slice(0,10)):'')+'</div></div><span class="tag">'+esc((p.source||'').toUpperCase())+'</span></div>'+
         '<div class="paper-abstract">'+esc((p.abstract||'No abstract available.').slice(0,260))+(p.abstract&&p.abstract.length>260?'…':'')+'</div>'+
-        '<div class="paper-actions"><button class="action primary" onclick="event.stopPropagation();openReaderFor('+JSON.stringify(p.id)+')">Read</button><button class="action" onclick="event.stopPropagation();removeSaved('+JSON.stringify(p.id)+')">Remove</button></div></article>'
+        '<div class="paper-actions"><button class="action primary" onclick="event.stopPropagation();openReaderFor('+attrArg(p.id)+')">Read</button><button class="action" onclick="event.stopPropagation();removeSaved('+attrArg(p.id)+')">Remove</button></div></article>'
       ).join(''):'<div class="empty">Nothing saved yet. Head to Discover and keep the papers you want to study.</div>')+'</div></section>'+
       '<aside class="card section-card"><div class="section-title"><h2>Library habits</h2></div>'+
         '<div class="kv"><div class="kv-row"><span>Saved</span><b>'+saved.length+'</b></div><div class="kv-row"><span>With notes</span><b>'+saved.filter(p=>getNotes()[p.id]).length+'</b></div><div class="kv-row"><span>With highlights</span><b>'+saved.filter(p=>(getHighlights()[p.id]||[]).length).length+'</b></div></div>'+
@@ -571,7 +572,7 @@ function renderHistory(){
     '<div class="view-grid">'+
       '<section class="card section-card"><div class="section-title"><h2>Recent searches</h2>'+(historyList.length?'<button class="action" onclick="clearHistory()">Clear history</button>':'')+'</div>'+
       '<div class="history-list">'+(historyList.length?historyList.map(h=>
-        '<div class="history-item"><strong>'+esc(h.q)+'</strong><span>'+new Date(h.time).toLocaleString()+' · '+h.count+' results</span><div style="margin-top:9px"><button class="action" onclick="goToDiscover('+JSON.stringify(h.q)+')">Search again</button></div></div>'
+        '<div class="history-item"><strong>'+esc(h.q)+'</strong><span>'+new Date(h.time).toLocaleString()+' · '+h.count+' results</span><div style="margin-top:9px"><button class="action" onclick="goToDiscover('+attrArg(h.q)+')">Search again</button></div></div>'
       ).join(''):'<div class="empty">No searches yet.</div>')+'</div></section>'+
       '<aside class="card section-card"><div class="section-title"><h2>Why history matters</h2></div><p class="muted" style="line-height:1.65">Research questions evolve. Keeping your recent searches makes it easier to return to an old thread without mixing it into your reading workspace.</p></aside>'+
     '</div>';
@@ -604,23 +605,23 @@ function renderReader(){
     '<div class="page-head"><div class="eyebrow">READER</div><h1>Deep reading workspace.</h1><p>Select one of your saved articles, read the PDF, and keep your thinking next to it.</p></div>'+
     '<section class="reader-shell">'+
       '<aside class="reader-list"><div class="reader-list-head"><h2>Saved articles</h2><p>'+saved.length+' paper'+(saved.length===1?'':'s')+' in your library</p></div><div class="reader-items">'+
-      saved.map(x=>'<button class="reader-item '+(x.id===p.id?'active':'')+'" onclick="openReaderFor('+JSON.stringify(x.id)+')"><div class="mini-title">'+esc(x.title)+'</div><div class="mini-meta">'+esc((x.source||'').toUpperCase())+(x.date?' · '+esc(String(x.date).slice(0,10)):'')+'</div></button>').join('')+
+      saved.map(x=>'<button class="reader-item '+(x.id===p.id?'active':'')+'" onclick="openReaderFor('+attrArg(x.id)+')"><div class="mini-title">'+esc(x.title)+'</div><div class="mini-meta">'+esc((x.source||'').toUpperCase())+(x.date?' · '+esc(String(x.date).slice(0,10)):'')+'</div></button>').join('')+
       '</div></aside>'+
       '<section class="reader-main">'+
         '<div class="reader-toolbar">'+
           '<button class="action" onclick="showReader(navButton(\'reader\'))">All saved</button>'+
           '<button class="action" onclick="readerPrev()">← Prev</button><button class="action" onclick="readerNext()">Next →</button>'+
           '<span class="spacer"></span>'+
-          '<button class="action" onclick="markRead('+JSON.stringify(p.id)+')">✓ Mark read</button>'+
-          '<button class="action" onclick="openPaper('+JSON.stringify(p.id)+')">Open PDF</button>'+
-          '<button class="action" onclick="removeSaved('+JSON.stringify(p.id)+')">Remove</button>'+
+          '<button class="action" onclick="markRead('+attrArg(p.id)+')">✓ Mark read</button>'+
+          '<button class="action" onclick="openPaper('+attrArg(p.id)+')">Open PDF</button>'+
+          '<button class="action" onclick="removeSaved('+attrArg(p.id)+')">Remove</button>'+
         '</div>'+
         '<div class="reader-body">'+
           '<div><h2 class="reader-title">'+esc(p.title)+'</h2><div class="reader-meta">'+esc((p.authors||[]).slice(0,8).join(', '))+(p.date?' · '+esc(String(p.date).slice(0,10)):'')+' · '+esc((p.source||'').toUpperCase())+'</div></div>'+
           '<div class="reader-stats"><div class="reader-stat"><b>'+m.readCount+'</b><span>times marked read</span></div><div class="reader-stat"><b>'+m.pdfOpens+'</b><span>PDF opens</span></div><div class="reader-stat"><b>'+((highs[p.id]||[]).length)+'</b><span>highlights</span></div><div class="reader-stat"><b>'+((notes[p.id]||'').trim()?'1':'0')+'</b><span>note</span></div></div>'+
           '<div class="reader-workspace">'+
             '<div class="pdf-panel">'+
-              (p.pdfUrl?'<iframe title="PDF reader" src="'+esc(p.pdfUrl)+'"></iframe>':'<div class="pdf-fallback">No PDF URL was returned for this record.<br><br><button class="action" onclick="window.open('+JSON.stringify(p.url||'#')+',\'_blank\')">Open source page</button></div>')+
+              (p.pdfUrl?'<iframe title="PDF reader" src="'+esc(p.pdfUrl)+'"></iframe>':'<div class="pdf-fallback">No PDF URL was returned for this record.<br><br><button class="action" onclick="window.open('+attrArg(p.url||'#')+',\'_blank\')">Open source page</button></div>')+
             '</div>'+
             '<aside class="notes-panel">'+
               '<div class="notes-tabs"><button class="notes-tab '+(currentReaderTab==='notes'?'active':'')+'" onclick="switchReaderTab(\'notes\')">Notes</button><button class="notes-tab '+(currentReaderTab==='highlights'?'active':'')+'" onclick="switchReaderTab(\'highlights\')">Highlights</button><button class="notes-tab '+(currentReaderTab==='brief'?'active':'')+'" onclick="switchReaderTab(\'brief\')">Brief</button></div>'+
@@ -628,7 +629,7 @@ function renderReader(){
             '</aside>'+
           '</div>'+
           '<div class="abstract-box selectable" id="readerAbstract"><b style="color:var(--text);display:block;margin-bottom:7px">Abstract</b>'+esc(p.abstract||'No abstract available.')+'</div>'+
-          '<div style="display:flex;gap:7px;flex-wrap:wrap"><button class="action primary" onclick="addHighlightFromSelection('+JSON.stringify(p.id)+')">Highlight selected text</button><button class="action" onclick="openDetail('+JSON.stringify(p.id)+')">Paper brief</button><button class="action" onclick="generateReaderSummary('+JSON.stringify(p.id)+')">Summarize</button></div>'+
+          '<div style="display:flex;gap:7px;flex-wrap:wrap"><button class="action primary" onclick="addHighlightFromSelection('+attrArg(p.id)+')">Highlight selected text</button><button class="action" onclick="openDetail('+attrArg(p.id)+')">Paper brief</button><button class="action" onclick="generateReaderSummary('+attrArg(p.id)+')">Summarize</button></div>'+
         '</div>'+
       '</section>'+
     '</section>';
@@ -640,20 +641,20 @@ function renderReaderSide(p){
   const notes=getNotes();const highs=getHighlights();
   if(currentReaderTab==='notes'){
     el.innerHTML='<textarea id="noteBox" class="notes-textarea" placeholder="Write what you think about this paper…">'+esc(notes[p.id]||'')+'</textarea>'+
-      '<button class="action primary" onclick="saveReaderNote('+JSON.stringify(p.id)+')">Save note</button>'+
+      '<button class="action primary" onclick="saveReaderNote('+attrArg(p.id)+')">Save note</button>'+
       '<div class="highlight-help">Notes are stored locally with this paper. You can keep a research question, key equation, critique, follow-up idea, or anything you do not want to lose.</div>';
   }else if(currentReaderTab==='highlights'){
     const list=highs[p.id]||[];
     el.innerHTML='<div class="highlight-help">Select text in the abstract below the PDF and press “Highlight selected text”. Each highlight can carry your own note.</div>'+
       '<div class="highlight-list">'+(list.length?list.map((h,i)=>
-        '<div class="highlight-entry"><div style="line-height:1.45">“'+esc(h.text)+'”</div><small>'+new Date(h.time).toLocaleString()+'</small><div style="margin-top:7px"><button class="action" onclick="deleteHighlight('+JSON.stringify(p.id)+','+i+')">Delete</button></div></div>'
+        '<div class="highlight-entry"><div style="line-height:1.45">“'+esc(h.text)+'”</div><small>'+new Date(h.time).toLocaleString()+'</small><div style="margin-top:7px"><button class="action" onclick="deleteHighlight('+attrArg(p.id)+','+i+')">Delete</button></div></div>'
       ).join(''):'<div class="empty" style="padding:25px 8px">No highlights yet.</div>')+'</div>';
   }else{
     el.innerHTML='<div class="highlight-help">Quick paper brief</div><div class="note-list"><div class="note-entry"><small>Title</small><div style="margin-top:4px;font-weight:720;line-height:1.4">'+esc(p.title)+'</div></div>'+
       '<div class="note-entry"><small>Authors</small><div style="margin-top:4px">'+esc((p.authors||[]).join(', ')||'Not supplied')+'</div></div>'+
       '<div class="note-entry"><small>Published</small><div style="margin-top:4px">'+esc(String(p.date||'Not supplied').slice(0,10))+'</div></div>'+
       '<div class="note-entry"><small>Source</small><div style="margin-top:4px">'+esc((p.source||'').toUpperCase())+'</div></div></div>'+
-      '<button class="action primary" onclick="generateReaderSummary('+JSON.stringify(p.id)+')">Generate in-short summary</button><div id="readerSummary" class="highlight-help">'+esc(localSummary(p))+'</div>';
+      '<button class="action primary" onclick="generateReaderSummary('+attrArg(p.id)+')">Generate in-short summary</button><div id="readerSummary" class="highlight-help">'+esc(localSummary(p))+'</div>';
   }
 }
 function saveReaderNote(id){
